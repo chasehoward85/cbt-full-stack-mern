@@ -4,6 +4,12 @@ import { NotesPage } from './pages/NotesPage';
 import { NotesDetailPage } from './pages/NoteDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
+const fakeNotes = [{
+	id: '123',
+	title: 'My First Note',
+	content: '*Hello my dear friends*'
+}];
+
 export const Routes = () => {
 	return (
 		<Router>
@@ -12,7 +18,7 @@ export const Routes = () => {
 					<Redirect to="/notes" />
 				</Route>
 				<Route path="/notes" exact>
-					<NotesPage />
+					<NotesPage notes={fakeNotes} />
 				</Route>
 				<Route path="/notes/:noteId">
 					<NotesDetailPage />
