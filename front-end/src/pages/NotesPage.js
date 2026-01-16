@@ -1,6 +1,12 @@
+import { useContext } from 'react';
+
 import { NotesList } from '../components/NotesList';
 
-export const NotesPage = ({ notes }) => {
+import { NotesContext } from '../contexts/NotesContext';
+
+export const NotesPage = () => {
+	const { notes } = useContext(NotesContext);
+	
 	return (
 		<>
 		<h1>My Notes</h1>

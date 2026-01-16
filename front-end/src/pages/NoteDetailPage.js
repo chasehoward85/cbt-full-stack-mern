@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 
-export const NotesDetailPage = ({ notes }) => {
+import { NotesContext } from '../contexts/NotesContext';
+
+export const NotesDetailPage = () => {
+	const { notes } = useContext(NotesContext);
+	
 	const { noteId } = useParams();
 	const note = notes.find(n => n.id === noteId);
 
