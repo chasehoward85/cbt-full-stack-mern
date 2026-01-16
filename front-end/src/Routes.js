@@ -21,7 +21,7 @@ export const Routes = () => {
 					<NotesPage notes={fakeNotes} />
 				</Route>
 				<Route path="/notes/:noteId">
-					<NotesDetailPage />
+					<NotesDetailPage notes={fakeNotes} />
 				</Route>
 				<Route>
 					<NotFoundPage />
