@@ -6,7 +6,7 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesDetailPage = () => {
-	const { notes } = useContext(NotesContext);
+	const { notes, updateNote } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
 	const note = notes.find(n => n.id === noteId);
@@ -16,7 +16,7 @@ export const NotesDetailPage = () => {
 	const [updatedContent, setUpdatedContent] = useState((note && note.content) || '');
 
 	const saveChanges = () => {
-		alert('Saving changes');
+		updateNote(noteId, { title: updatedTitle, content: updatedContent });
 		setIsEditing(false);
 	}
 
