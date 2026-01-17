@@ -6,18 +6,19 @@ const getWordCount = str => {
 	return str.split(' ').length;
 }
 
-export const NotesList = ({ notes }) => {
+export const NotesList = ({ notes, onRequestDelete }) => {
 	return (
 		<>
 		{notes.map(notes => (
 			<div key={notes.id}>
 				<h3>{notes.title}</h3>
 				<p>{getWordCount(notes.content)} word(s)</p>
+				<button onClick={() => onRequestDelete(notes.id)}>Delete</button>
 				<Link to={`/notes/${notes.id}`}>
 					<button>View</button>
 				</Link>
 			</div>
 		))}
 		</>
-	)
+	);
 }

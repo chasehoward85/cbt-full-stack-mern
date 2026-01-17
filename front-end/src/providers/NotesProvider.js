@@ -16,8 +16,12 @@ export const NotesProvider = ({ children }) => {
 		setNotes(notes.concat({ id: uuid(), title, content: ''}))
 	}
 	
+	const deleteNote = id => {
+		setNotes(notes.filter(note => note.id !== id));
+	}
+	
 	return (
-		<NotesContext.Provider value={{ notes, createNote }}>
+		<NotesContext.Provider value={{ notes, createNote, deleteNote }}>
 			{children}
 		</NotesContext.Provider>
 	)
