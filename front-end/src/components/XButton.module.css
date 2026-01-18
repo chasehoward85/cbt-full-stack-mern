@@ -1,0 +1,16 @@
+.circle {
+	background-color: #ccc;
+	border-radius: 50%;
+	cursor: pointer;
+	height: 24px;
+	position: relative;
+	text-align: center;
+	width: 24px;
+}
+
+.theX {
+	font-weight: bold;
+	left: 8px;
+	position: absolute;
+	top: 3px;
+}
