@@ -79,3 +79,16 @@ input, textarea {
 	top: 0;
 	right: 0;
 }
+
+.notes-list-item {
+	align-items: center;
+	box-sizing: border-box;
+	border-bottom: 1px solid #ccc;
+	cursor: pointer;
+	display: flex;
+	padding: 16px;
+}
+
+.notes-list-item:hover {
+	background-color: #eee;
+}

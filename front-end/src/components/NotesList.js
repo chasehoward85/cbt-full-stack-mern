@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { XButton } from './XButton';
 
 const getWordCount = str => {
 	if(!str) return 0;
@@ -6,20 +6,20 @@ const getWordCount = str => {
 	return str.split(' ').length;
 }
 
-export const NotesList = ({ notes, onRequestDelete }) => {
+export const NotesList = ({ notes, onRequestDelete, onClickItem }) => {
 	return (
 		<>
 		{notes.map(notes => (
-			<div key={notes.id}>
-				<h3>{notes.title}</h3>
-				<p>{getWordCount(notes.content)} word(s)</p>
-
-				<div style={{ paddingBottom: '8px'}} className="evenly-spaced">
-					<button onClick={() => onRequestDelete(notes.id)}>Delete</button>
-					<Link to={`/notes/${notes.id}`}>
-						<button className="full-width">View</button>
-					</Link>
+			<div className="notes-list-item" onClick={() => onClickItem(notes.id)} key={notes.id}>
+				<div style={{ flex: 1 }}>
+					<h3>{notes.title}</h3>
+					<p>{getWordCount(notes.content)} word(s)</p>
 				</div>
+
+				<XButton onClick={e => {
+					e.stopPropagation();
+					onRequestDelete(notes.id);
+				}} />
 			</div>
 		))}
 		</>
