@@ -13,10 +13,13 @@ export const NotesList = ({ notes, onRequestDelete }) => {
 			<div key={notes.id}>
 				<h3>{notes.title}</h3>
 				<p>{getWordCount(notes.content)} word(s)</p>
-				<button onClick={() => onRequestDelete(notes.id)}>Delete</button>
-				<Link to={`/notes/${notes.id}`}>
-					<button>View</button>
-				</Link>
+
+				<div style={{ paddingBottom: '8px'}} className="evenly-spaced">
+					<button onClick={() => onRequestDelete(notes.id)}>Delete</button>
+					<Link to={`/notes/${notes.id}`}>
+						<button className="full-width">View</button>
+					</Link>
+				</div>
 			</div>
 		))}
 		</>

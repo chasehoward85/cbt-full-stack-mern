@@ -7,20 +7,22 @@ import { NotFoundPage } from './pages/NotFoundPage';
 export const Routes = () => {
 	return (
 		<Router>
-			<Switch>
-				<Route path="/" exact>
-					<Redirect to="/notes" />
-				</Route>
-				<Route path="/notes" exact>
-					<NotesPage />
-				</Route>
-				<Route path="/notes/:noteId">
-					<NotesDetailPage />
-				</Route>
-				<Route>
-					<NotFoundPage />
-				</Route>
-			</Switch>
+			<div className="content-container">
+				<Switch>
+					<Route path="/" exact>
+						<Redirect to="/notes" />
+					</Route>
+					<Route path="/notes" exact>
+						<NotesPage />
+					</Route>
+					<Route path="/notes/:noteId">
+						<NotesDetailPage />
+					</Route>
+					<Route>
+						<NotFoundPage />
+					</Route>
+				</Switch>
+			</div>
 		</Router>
 	)
 }

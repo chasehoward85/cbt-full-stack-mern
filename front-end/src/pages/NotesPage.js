@@ -35,7 +35,7 @@ export const NotesPage = () => {
 
 		<h1>My Notes</h1>
 		<NotesList notes={notes} onRequestDelete={id => setCurrentlyDeletingNoteId(id)}/>
-		<button onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
+		<button className="full-width" onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
 		</>
 	);
 }
