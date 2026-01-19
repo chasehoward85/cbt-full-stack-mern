@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 
@@ -54,7 +55,7 @@ export const NotesDetailPage = () => {
 	return (
 		<>
 		<h1>{note.title}</h1>
-		{note.content ? <p>{note.content}</p> : <p className="weak">This note currently has no content</p>}
+		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
 		<button onClick={() => setIsEditing(true)}>Edit</button>
 		</>
 	);
