@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 
@@ -28,20 +29,25 @@ export const NotesDetailPage = () => {
 		return (
 			<>
 			<input
+				className="full-width space-below"
 				placeholder="Enter a title"
 				value={updatedTitle}
 				onChange={e => setUpdatedTitle(e.target.value)} />
 
 			<textarea
+				className="full-width space-below"
 				placeholder="Type your note here"
 				value={updatedContent}
 				onChange={e => setUpdatedContent(e.target.value)} />
-			<button onClick={() => {
-				setUpdatedTitle(note.title);
-				setUpdatedContent(note.content);
-				setIsEditing(false);
-			}}>Cancel</button>
-			<button onClick={saveChanges}>Save Changes</button>
+
+			<div className="evenly-spaced">
+				<button onClick={() => {
+					setUpdatedTitle(note.title);
+					setUpdatedContent(note.content);
+					setIsEditing(false);
+				}}>Cancel</button>
+				<button onClick={saveChanges}>Save Changes</button>
+			</div>
 			</>
 		)
 	}
@@ -49,7 +55,7 @@ export const NotesDetailPage = () => {
 	return (
 		<>
 		<h1>{note.title}</h1>
-		<p>{note.content}</p>
+		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
 		<button onClick={() => setIsEditing(true)}>Edit</button>
 		</>
 	);

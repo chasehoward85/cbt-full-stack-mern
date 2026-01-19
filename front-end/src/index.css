@@ -1,33 +1,107 @@
 body {
-  margin: 0;
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+}
+
+button, input, textarea {
+	border-radius: 8px;
+	box-sizing: border-box;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	outline: none;
+	padding: 16px;
+}
+
+button {
+	background-color: black;
+	border: none;
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+input, textarea {
+	border: 2px solid #ddd;
+}
+
+.content-container {
+	margin: auto;
+	max-width: 700px;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.space-below {
+	margin-bottom: 8px;
+}
+
+.evenly-spaced {
+	display: flex;
+}
+
+.evenly-spaced > * {
+	flex: 1;
+	margin: 0 4px;
+}
+
+.weak {
+	font-style: italic;
 }
 
 .modal-background {
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-body {
-  background-color: white;
-  border-radius: 8px;
-  margin: 10% auto;
-  padding: 20px;
-  max-width: 50%;
+	background-color: white;
+	border-radius: 8px;
+	margin: 10% auto;
+	padding: 20px;
+	max-width: 400px;
 }
 
 .modal-top-bar {
-  position: relative;
-  min-height: 20px;
+	position: relative;
+	min-height: 20px;
 }
 
 .modal-close-button {
-  position: absolute;
-  top: 0;
-  right: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.notes-list-item {
+	align-items: center;
+	box-sizing: border-box;
+	border-bottom: 1px solid #ccc;
+	cursor: pointer;
+	display: flex;
+	padding: 16px;
+}
+
+.notes-list-item:hover {
+	background-color: #eee;
+}
+
+nav {
+	padding: 16px;
+}
+
+.brand-logo {
+	color: black;
+	text-decoration: none;
+}
+
+.brand-highlight {
+	color: red;
 }

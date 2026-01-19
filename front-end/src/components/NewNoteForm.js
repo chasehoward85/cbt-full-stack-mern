@@ -7,11 +7,12 @@ export const NewNoteForm = ({ onSubmit = () => {} }) => {
 		<>
 		<h3>Add a New Note</h3>
 		<input
+			className="full-width space-below"
 			placeholder="Enter a Title"
 			value={title}
 			onChange={e => setTitle(e.target.value)} />
 
-		<button onClick={() => onSubmit(title)}>Create</button>
+		<button className="full-width" onClick={() => onSubmit(title)}>Create</button>
 		</>
 	);
 }

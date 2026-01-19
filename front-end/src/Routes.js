@@ -3,24 +3,28 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { NotesPage } from './pages/NotesPage';
 import { NotesDetailPage } from './pages/NoteDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { NavBar } from './components/NavBar';
 
 export const Routes = () => {
 	return (
 		<Router>
-			<Switch>
-				<Route path="/" exact>
-					<Redirect to="/notes" />
-				</Route>
-				<Route path="/notes" exact>
-					<NotesPage />
-				</Route>
-				<Route path="/notes/:noteId">
-					<NotesDetailPage />
-				</Route>
-				<Route>
-					<NotFoundPage />
-				</Route>
-			</Switch>
+			<NavBar />
+			<div className="content-container">
+				<Switch>
+					<Route path="/" exact>
+						<Redirect to="/notes" />
+					</Route>
+					<Route path="/notes" exact>
+						<NotesPage />
+					</Route>
+					<Route path="/notes/:noteId">
+						<NotesDetailPage />
+					</Route>
+					<Route>
+						<NotFoundPage />
+					</Route>
+				</Switch>
+			</div>
 		</Router>
 	)
 }

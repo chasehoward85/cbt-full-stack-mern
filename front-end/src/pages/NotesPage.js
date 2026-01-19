@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { NotesList } from '../components/NotesList';
 import { NewNoteForm } from '../components/NewNoteForm';
@@ -9,6 +10,7 @@ import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesPage = () => {
 	const { notes, createNote, deleteNote } = useContext(NotesContext);
+	const history = useHistory();
 
 	const [newNoteModalIsOpen, setNewNoteModalIsOpen] = useState(false);
 	const [currentlyDeleteingNoteId, setCurrentlyDeletingNoteId] = useState('');
@@ -34,8 +36,8 @@ export const NotesPage = () => {
 		</Modal>
 
 		<h1>My Notes</h1>
-		<NotesList notes={notes} onRequestDelete={id => setCurrentlyDeletingNoteId(id)}/>
-		<button onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
+		<NotesList notes={notes} onRequestDelete={id => setCurrentlyDeletingNoteId(id)} onClickItem={id => history.push(`/notes/${id}`)}/>
+		<button className="full-width" onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
 		</>
 	);
 }
