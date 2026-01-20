@@ -1,31 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 import { NotesContext } from '../contexts/NotesContext';
 
-const fakeNotes = [{
-	id: '123',
-	title: 'My First Note',
-	content: '*Hello my dear friends*'
-}];
-
 export const NotesProvider = ({ children }) => {
-	const [notes, setNotes] = useState(fakeNotes);
+	const [isLoading, setIsLoading] = useState(true);
+	const [notes, setNotes] = useState([]);
 
-	const createNote = title => {
-		setNotes(notes.concat({ id: uuid(), title, content: ''}))
+	useEffect(() => {
+		const loadNotes = async () => {
+			try {
+				const response = await axios.get('/notes');
+
+				setNotes(response.data);
+				console.log(response.data);
+				setIsLoading(false);
+			} catch(e) {
+				setIsLoading(false);
+			}
+		}
+
+		loadNotes();
+	}, []);
+
+	const createNote = async title => {
+		try {
+			const response = await axios.post('/notes', { title });
+
+			setNotes(response.data);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
-	const updateNote = (id, { title, content }) => {
-		setNotes(notes.map(note => note.id === id ? { id, title, content } : note));
+	const updateNote = async (id, { title, content }) => {
+		try {
+			const response = await axios.put(`/notes/${id}`, { title, content });
+
+			setNotes(response.data);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 	
-	const deleteNote = id => {
-		setNotes(notes.filter(note => note.id !== id));
+	const deleteNote = async id => {
+		try {
+			const response = await axios.delete(`/notes/${id}`);
+
+			setNotes(response.data);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, createNote, deleteNote, updateNote }}>
+		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote }}>
 			{children}
 		</NotesContext.Provider>
 	)

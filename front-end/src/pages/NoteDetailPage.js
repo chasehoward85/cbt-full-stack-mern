@@ -7,7 +7,7 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesDetailPage = () => {
-	const { notes, updateNote } = useContext(NotesContext);
+	const { notes, isLoading, updateNote } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
 	const note = notes.find(n => n.id === noteId);
@@ -19,6 +19,10 @@ export const NotesDetailPage = () => {
 	const saveChanges = () => {
 		updateNote(noteId, { title: updatedTitle, content: updatedContent });
 		setIsEditing(false);
+	}
+
+	if(isLoading) {
+		return <p>Loading</p>
 	}
 
 	if(!note) {

@@ -36,6 +36,7 @@ export const NotesPage = () => {
 		</Modal>
 
 		<h1>My Notes</h1>
+		{notes.length === 0 && <p className="weak">There are currently no notes, add one!</p>}
 		<NotesList notes={notes} onRequestDelete={id => setCurrentlyDeletingNoteId(id)} onClickItem={id => history.push(`/notes/${id}`)}/>
 		<button className="full-width" onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
 		</>
