@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 import { NotesContext } from '../contexts/NotesContext';
 
-const fakeNotes = [{
-	id: '123',
-	title: 'My First Note',
-	content: '*Hello my dear friends*'
-}];
-
 export const NotesProvider = ({ children }) => {
-	const [notes, setNotes] = useState(fakeNotes);
+	const [isLoading, setIsLoading] = useState(true);
+	const [notes, setNotes] = useState([]);
+
+	useEffect(() => {
+		const loadNotes = async () => {
+			try {
+				const response = await axios.get('/notes');
+
+				setNotes(response.data);
+				console.log(response.data);
+				setIsLoading(false);
+			} catch(e) {
+				setIsLoading(false);
+			}
+		}
+
+		loadNotes();
+	}, []);
 
 	const createNote = title => {
 		setNotes(notes.concat({ id: uuid(), title, content: ''}))
@@ -25,7 +37,7 @@ export const NotesProvider = ({ children }) => {
 	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, createNote, deleteNote, updateNote }}>
+		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote }}>
 			{children}
 		</NotesContext.Provider>
 	)
