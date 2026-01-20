@@ -35,6 +35,13 @@ app.put('/notes/:noteId', (req, res) => {
 	res.json(notes);
 });
 
+app.delete('/notes/:noteId', (req, res) => {
+	const { noteId } = req.params;
+	notes = notes.filter(note => note.id !== noteId);
+
+	res.json(notes);
+});
+
 app.listen(8080, () => {
 	console.log('Server is listening on port 8080');
 });
