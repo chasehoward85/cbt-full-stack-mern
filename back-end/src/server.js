@@ -26,6 +26,15 @@ app.post('/notes', (req, res) => {
 	res.json(notes);
 });
 
+app.put('/notes/:noteId', (req, res) => {
+	const { noteId } = req.params;
+	const { title, content } = req.body;
+
+	notes = notes.map(note => note.id === noteId ? { id: noteId, title, content } : note);
+
+	res.json(notes);
+});
+
 app.listen(8080, () => {
 	console.log('Server is listening on port 8080');
 });

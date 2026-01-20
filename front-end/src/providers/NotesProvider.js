@@ -34,8 +34,14 @@ export const NotesProvider = ({ children }) => {
 		}
 	}
 
-	const updateNote = (id, { title, content }) => {
-		setNotes(notes.map(note => note.id === id ? { id, title, content } : note));
+	const updateNote = async (id, { title, content }) => {
+		try {
+			const response = await axios.put(`/notes/${id}`, { title, content });
+
+			setNotes(response.data);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 	
 	const deleteNote = id => {
