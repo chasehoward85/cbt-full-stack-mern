@@ -1,4 +1,5 @@
 import express from 'express';
+import { v4 as uuid } from 'uuid';
 
 const app = express();
 app.use(express.json());
@@ -10,6 +11,18 @@ let notes = [{
 }];
 
 app.get('/notes', (req, res) => {
+	res.json(notes);
+});
+
+app.post('/notes', (req, res) => {
+	const { title } = req.body;
+
+	notes.push({
+		id: uuid(),
+		title,
+		content: '',
+	});
+
 	res.json(notes);
 });
 

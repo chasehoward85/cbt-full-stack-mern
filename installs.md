@@ -5,7 +5,8 @@
 - axios
 
 # Back End
-- Express
+- express
+- uuid
 - Dev Dependencies (--save-dev)
 	- @babel/core @babel/node @babel/preset-env
 	- nodemon

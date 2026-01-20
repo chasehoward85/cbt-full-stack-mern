@@ -24,8 +24,14 @@ export const NotesProvider = ({ children }) => {
 		loadNotes();
 	}, []);
 
-	const createNote = title => {
-		setNotes(notes.concat({ id: uuid(), title, content: ''}))
+	const createNote = async title => {
+		try {
+			const response = await axios.post('/notes', { title });
+
+			setNotes(response.data);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	const updateNote = (id, { title, content }) => {
