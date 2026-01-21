@@ -16,8 +16,9 @@ export const NotesDetailPage = () => {
 	const [updatedTitle, setUpdatedTitle] = useState((note && note.title) || '');
 	const [updatedContent, setUpdatedContent] = useState((note && note.content) || '');
 
-	const saveChanges = () => {
-		updateNote(noteId, { title: updatedTitle, content: updatedContent });
+	const saveChanges = async () => {
+		await updateNote(noteId, { title: updatedTitle, content: updatedContent });
+		console.log(note);
 		setIsEditing(false);
 	}
 

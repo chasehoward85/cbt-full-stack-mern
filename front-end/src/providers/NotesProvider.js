@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
 import { NotesContext } from '../contexts/NotesContext';
@@ -27,8 +26,10 @@ export const NotesProvider = ({ children }) => {
 	const createNote = async title => {
 		try {
 			const response = await axios.post('/notes', { title });
+			
+			const newNote = response.data;
 
-			setNotes(response.data);
+			setNotes(notes.concat(newNote));
 		} catch(e) {
 			console.log(e);
 		}
@@ -37,8 +38,10 @@ export const NotesProvider = ({ children }) => {
 	const updateNote = async (id, { title, content }) => {
 		try {
 			const response = await axios.put(`/notes/${id}`, { title, content });
+			
+			const updatedNote = response.data;
 
-			setNotes(response.data);
+			setNotes(notes.map(note => note.id === id ? updatedNote : note));
 		} catch(e) {
 			console.log(e);
 		}
@@ -46,9 +49,8 @@ export const NotesProvider = ({ children }) => {
 	
 	const deleteNote = async id => {
 		try {
-			const response = await axios.delete(`/notes/${id}`);
-
-			setNotes(response.data);
+			await axios.delete(`/notes/${id}`);
+			setNotes(notes.filter(note => note.id !== id));
 		} catch(e) {
 			console.log(e);
 		}
