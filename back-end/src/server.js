@@ -2,28 +2,27 @@ import express from 'express';
 import { v4 as uuid } from 'uuid';
 import { MongoClient } from 'mongodb';
 
+import { routes } from './routes';
+
 const DATABASE_URL = process.env.DATABASE_URL;
 const DATABASE_NAME = process.env.DATABASE_NAME;
 
 const app = express();
 app.use(express.json());
 
-let notes = [{
-	id: '123',
-	title: 'My First Note',
-	content: '*Hello my dear friends*'
-}];
-
-
 const start = async () => {
 	const client = await MongoClient.connect(DATABASE_URL);
 	const notesDb = client.db(DATABASE_NAME).collection('notes');
 
-	app.get('/notes', async (req, res) => {
-		const notes = await notesDb.find({}).toArray();
-
-		res.json(notes);
+	routes.forEach(route => {
+		app[route.method](route.path, route.handler);
 	});
+
+	// app.get('/notes', async (req, res) => {
+	// 	const notes = await notesDb.find({}).toArray();
+
+	// 	res.json(notes);
+	// });
 
 	app.post('/notes', async (req, res) => {
 		const { title } = req.body;
