@@ -8,8 +8,6 @@ export const deleteNoteRoute = {
 
 		await notesDb.deleteOne({ id: noteId });
 		
-		const updatedNotes = await notesDb.find({}).toArray();
-
-		res.json(updatedNotes);
+		res.sendStatus(200);
 	}
 }

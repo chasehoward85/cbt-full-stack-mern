@@ -7,12 +7,14 @@ export const updateNoteRoute = {
 		const { noteId } = req.params;
 		const { title, content } = req.body;
 
-		await notesDb.updateOne({ id: noteId }, {
+		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
 			$set: { title, content },
+		}, {
+			returnDocument: 'after',
 		});
 
-		const updatedNotes = await notesDb.find({}).toArray();
+		const updatedNote = result;
 
-		res.json(updatedNotes);
+		res.json(updatedNote);
 	}
 }
