@@ -16,39 +16,50 @@ let notes = [{
 
 
 const start = async () => {
-	const client = await MongoClient.connect(`${DATABASE_URL}`);
-	const notesDb = client.db(`${DATABASE_NAME}`).collection('notes');
+	const client = await MongoClient.connect(DATABASE_URL);
+	const notesDb = client.db(DATABASE_NAME).collection('notes');
 
-	app.get('/notes', (req, res) => {
+	app.get('/notes', async (req, res) => {
+		const notes = await notesDb.find({}).toArray();
+
 		res.json(notes);
 	});
 
-	app.post('/notes', (req, res) => {
+	app.post('/notes', async (req, res) => {
 		const { title } = req.body;
 
-		notes.push({
+		await notesDb.insertOne({
 			id: uuid(),
 			title,
 			content: '',
 		});
 
-		res.json(notes);
+		const updatedNotes = await notesDb.find({}).toArray();
+
+		res.json(updatedNotes);
 	});
 
-	app.put('/notes/:noteId', (req, res) => {
+	app.put('/notes/:noteId', async (req, res) => {
 		const { noteId } = req.params;
 		const { title, content } = req.body;
 
-		notes = notes.map(note => note.id === noteId ? { id: noteId, title, content } : note);
+		await notesDb.updateOne({ id: noteId }, {
+			$set: { title, content },
+		});
 
-		res.json(notes);
+		const updatedNotes = await notesDb.find({}).toArray();
+
+		res.json(updatedNotes);
 	});
 
-	app.delete('/notes/:noteId', (req, res) => {
+	app.delete('/notes/:noteId', async (req, res) => {
 		const { noteId } = req.params;
-		notes = notes.filter(note => note.id !== noteId);
 
-		res.json(notes);
+		await notesDb.deleteOne({ id: noteId });
+		
+		const updatedNotes = await notesDb.find({}).toArray();
+
+		res.json(updatedNotes);
 	});
 
 	app.listen(8080, () => {
