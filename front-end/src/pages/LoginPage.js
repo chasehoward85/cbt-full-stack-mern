@@ -12,9 +12,13 @@ export const LoginPage = () => {
 
 	return (
 		<div className="centered-container">
-			<h1>Log In</h1>
+			<h1 className="h-centered">Log In</h1>
 			<LoginForm onSubmit={logIn}/>
-			<Link to="/create-account">Create Account</Link>
+			<Link
+				style={{ display: 'block' }}
+				className="h-centered"
+				to="/create-account"
+			>Create Account</Link>
 		</div>
 	);
 }

@@ -12,9 +12,13 @@ export const CreateAccountPage = () => {
 
 	return (
 		<div className="centered-container">
-			<h1>Create Account</h1>
+			<h1 className="h-centered">Create Account</h1>
 			<CreateAccountForm onSubmit={createAccount}/>
-			<Link to="/login">Already have an account? Log In</Link>
+			<Link
+				style={{ display: 'block' }}
+				className="h-centered"
+				to="/login"
+			>Already have an account? Log In</Link>
 		</div>
 	);
 }

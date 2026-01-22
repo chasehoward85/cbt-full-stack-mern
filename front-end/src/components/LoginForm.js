@@ -7,18 +7,20 @@ export const LoginForm = ({ onSubmit }) => {
 	return (
 		<>
 		<input
-			type='email'
-			placeholder='john.doe@gmail.com'
+			className="full-width space-below"
+			type="email"
+			placeholder="john.doe@gmail.com"
 			value={email}
 			onChange={e => setEmail(e.target.value)} />
 
 		<input
-			type='password'
-			placeholder='Password'
+			className="full-width space-below"
+			type="password"
+			placeholder="Password"
 			value={password}
 			onChange={e => setPassword(e.target.value)} />
 
-		<button onClick={() => onSubmit(email, password)}>Log In</button>
+		<button className="full-width space-below" onClick={() => onSubmit(email, password)}>Log In</button>
 		</>
 	);
 }
