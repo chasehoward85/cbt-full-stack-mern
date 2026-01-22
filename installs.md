@@ -3,6 +3,7 @@
 - uuid
 - react-markdown
 - axios
+- firebase
 
 # Back End
 - express

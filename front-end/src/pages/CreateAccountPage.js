@@ -1,13 +1,16 @@
 import { Link, useHistory } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
 
 export const CreateAccountPage = () => {
 	const history = useHistory();
 
-	const createAccount = (email, password, confirmPassword) => {
-		alert('Creating Account');
-		history.push('/notes');
+	const createAccount = async (email, password, confirmPassword) => {
+		if(password === confirmPassword) {
+			await createUserWithEmailAndPassword(getAuth(), email, password);
+			history.push('/notes');
+		}
 	}
 
 	return (

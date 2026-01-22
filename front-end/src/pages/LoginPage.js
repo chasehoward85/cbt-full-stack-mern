@@ -1,12 +1,13 @@
 import { Link, useHistory } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import { LoginForm } from '../components/LoginForm';
 
 export const LoginPage = () => {
 	const history = useHistory();
 
-	const logIn = (email, password) => {
-		alert('Logging in');
+	const logIn = async (email, password) => {
+		await signInWithEmailAndPassword(getAuth(), email, password);
 		history.push('/notes');
 	}
 
