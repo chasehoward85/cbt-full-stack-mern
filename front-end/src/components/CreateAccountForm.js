@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const CreateAccountForm = ({ }) => {
+export const CreateAccountForm = ({ onSubmit }) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,8 +22,8 @@ export const CreateAccountForm = ({ }) => {
 		<input
 			type="password"
 			placeholder="Re-Enter Your Password"
-			value={password}
-			onChange={e => setPassword(e.target.value)} />
+			value={confirmPassword}
+			onChange={e => setConfirmPassword(e.target.value)} />
 
 		<button onClick={() => onSubmit(email, password, confirmPassword)}>Create Account</button>
 		</>
