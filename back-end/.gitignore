@@ -1,3 +1,4 @@
 node_modules
 .env
 connectToDatabase.sh
+credentials.json
