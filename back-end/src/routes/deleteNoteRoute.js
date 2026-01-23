@@ -1,21 +1,16 @@
 import { notesDb, usersDb } from '../db';
 
+import { userOwnsNote } from '../middleware/userOwnsNote';
 import { verifyAuthToken } from '../middleware/verifyAuthToken';
 
 export const deleteNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'delete',
-	middleware: [verifyAuthToken],
+	middleware: [verifyAuthToken, userOwnsNote],
 	handler: async (req, res) => {
-		const authUser = req.user;
-
 		const { noteId } = req.params;
 
-		const note = await notesDb.findOne({ id: noteId });
-
-		if(note.createdBy !== authUser.uid) {
-			return res.sendStatus(403);
-		}
+		const note = req.note;
 
 		await notesDb.deleteOne({ id: noteId });
 
