@@ -1,24 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+import { useUser } from '../hooks/useUser';
 
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesProvider = ({ children }) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
-
-	const [userIsLoading, setUserIsLoading] = useState(true);
-	const [user, setUser] = useState(null);
-
-	useEffect(() => {
-		const cancelSubscription = onAuthStateChanged(getAuth(), user => {
-			setUser(user);
-			setUserIsLoading(false);
-		});
-
-		return cancelSubscription;
-	}, []);
+	
+	const { user } = useUser();
 
 	useEffect(() => {
 		const loadNotes = async () => {
