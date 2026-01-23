@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import { useUser } from '../hooks/useUser';
+import { useAuthedRequest } from '../hooks/useAuthedRequest';
 
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesProvider = ({ children }) => {
+	const { isReady, get, post, put, del} = useAuthedRequest();
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
 	
@@ -14,20 +16,19 @@ export const NotesProvider = ({ children }) => {
 	useEffect(() => {
 		const loadNotes = async () => {
 			try {
-				const response = await axios.get(`/users/${user.uid}/notes`);
+				const notes = await get(`/users/${user.uid}/notes`);
 
-				setNotes(response.data);
-				console.log(response.data);
+				setNotes(notes);
 				setIsLoading(false);
 			} catch(e) {
 				setIsLoading(false);
 			}
 		}
 
-		if(user) {
+		if(user && isReady) {
 			loadNotes();
 		}
-	}, [user]);
+	}, [user, get, isReady]);
 
 	const createNote = async title => {
 		if(!user) {
@@ -35,9 +36,7 @@ export const NotesProvider = ({ children }) => {
 		}
 
 		try {
-			const response = await axios.post(`/users/${user.uid}/notes`, { title });
-			
-			const newNote = response.data;
+			const newNote = await post(`/users/${user.uid}/notes`, { title });
 
 			setNotes(notes.concat(newNote));
 		} catch(e) {
@@ -47,9 +46,7 @@ export const NotesProvider = ({ children }) => {
 
 	const updateNote = async (id, { title, content }) => {
 		try {
-			const response = await axios.put(`/notes/${id}`, { title, content });
-			
-			const updatedNote = response.data;
+			const updatedNote = await put(`/notes/${id}`, { title, content });
 
 			setNotes(notes.map(note => note.id === id ? updatedNote : note));
 		} catch(e) {
@@ -59,7 +56,7 @@ export const NotesProvider = ({ children }) => {
 	
 	const deleteNote = async id => {
 		try {
-			await axios.delete(`/notes/${id}`);
+			await del(`/notes/${id}`);
 			setNotes(notes.filter(note => note.id !== id));
 		} catch(e) {
 			console.log(e);
