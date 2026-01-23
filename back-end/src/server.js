@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 
 import { initializeDbConnection } from './db';
 import { routes } from './routes';
+
 // import credentials from '../credentials.json';		// Without env ecret
 
 // admin.initializeApp({ credential: admin.credential.cert(credentials) });		// Without env secret
@@ -16,7 +17,7 @@ const start = async () => {
 	await initializeDbConnection();
 
 	routes.forEach(route => {
-		app[route.method](route.path, route.handler);
+		app[route.method](route.path, ...route.middleware, route.handler);
 	});
 
 	app.listen(8080, () => {
