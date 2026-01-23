@@ -1,28 +1,24 @@
-import * as admin from 'firebase-admin';
-
 import { usersDb, notesDb } from '../db';
+
+import { verifyAuthToken } from '../middleware/verifyAuthToken';
 
 export const listNotesRoute = {
 	path: '/users/:userId/notes',
 	method: 'get',
+	middleware: [verifyAuthToken],
 	handler: async(req, res) => {
-		try {
-			const { authtoken } = req.headers;
-			const authUser = await admin.auth().verifyIdToken(authtoken);
+		const authUser = req.user;
 
-			const { userId } = req.params;
+		const { userId } = req.params;
 
-			if(authUser.uid !== userId) {
-				return res.sendStatus(403);
-			}
-
-			const user = await usersDb.findOne({ id: userId });
-			
-			const notes = await Promise.all(user.notes.map(id => notesDb.findOne({ id })));
-
-			res.json(notes);
-		} catch(e) {
-			res.sendStatus(401);
+		if(authUser.uid !== userId) {
+			return res.sendStatus(403);
 		}
+
+		const user = await usersDb.findOne({ id: userId });
+		
+		const notes = await Promise.all(user.notes.map(id => notesDb.findOne({ id })));
+
+		res.json(notes);
 	}
 }

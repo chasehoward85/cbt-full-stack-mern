@@ -1,32 +1,28 @@
-import * as admin from 'firebase-admin';
+import { notesDb, usersDb } from '../db';
 
-import { notesDb, usersDb } from "../db";
+import { verifyAuthToken } from '../middleware/verifyAuthToken';
 
 export const deleteNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'delete',
+	middleware: [verifyAuthToken],
 	handler: async (req, res) => {
-		try {
-			const { authtoken } = req.headers;
-			const authUser = await admin.auth().verifyIdToken(authtoken);
+		const authUser = req.user;
 
-			const { noteId } = req.params;
+		const { noteId } = req.params;
 
-			const note = await notesDb.findOne({ id: noteId });
+		const note = await notesDb.findOne({ id: noteId });
 
-			if(note.createdBy !== authUser.uid) {
-				return res.sendStatus(403);
-			}
-
-			await notesDb.deleteOne({ id: noteId });
-
-			await usersDb.updateOne({ id: note.createdBy }, {
-				$pull: { notes: note.id },
-			});
-			
-			res.sendStatus(200);
-		} catch(e) {
-			res.sendStatus(401);
+		if(note.createdBy !== authUser.uid) {
+			return res.sendStatus(403);
 		}
+
+		await notesDb.deleteOne({ id: noteId });
+
+		await usersDb.updateOne({ id: note.createdBy }, {
+			$pull: { notes: note.id },
+		});
+		
+		res.sendStatus(200);
 	}
 }
