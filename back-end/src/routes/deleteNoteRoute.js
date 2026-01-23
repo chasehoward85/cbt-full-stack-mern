@@ -1,4 +1,4 @@
-import { notesDb } from "../db";
+import { notesDb, usersDb } from "../db";
 
 export const deleteNoteRoute = {
 	path: '/notes/:noteId',
@@ -6,7 +6,11 @@ export const deleteNoteRoute = {
 	handler: async (req, res) => {
 		const { noteId } = req.params;
 
-		await notesDb.deleteOne({ id: noteId });
+		const result = await notesDb.findOneAndDelete({ id: noteId });
+
+		await usersDb.updateOne({ id: result.createdBy }, {
+			$pull: { notes: result.id },
+		});
 		
 		res.sendStatus(200);
 	}
