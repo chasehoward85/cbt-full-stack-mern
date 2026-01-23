@@ -9,11 +9,15 @@ import { Modal } from '../components/Modal';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesPage = () => {
-	const { notes, createNote, deleteNote } = useContext(NotesContext);
+	const { isLoading, notes, createNote, deleteNote } = useContext(NotesContext);
 	const history = useHistory();
 
 	const [newNoteModalIsOpen, setNewNoteModalIsOpen] = useState(false);
 	const [currentlyDeleteingNoteId, setCurrentlyDeletingNoteId] = useState('');
+
+	if(isLoading) {
+		return <p>Loading...</p>
+	}
 
 	return (
 		<>
