@@ -1,17 +1,32 @@
+import * as admin from 'firebase-admin';
+
 import { notesDb, usersDb } from "../db";
 
 export const deleteNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'delete',
 	handler: async (req, res) => {
-		const { noteId } = req.params;
+		try {
+			const { authtoken } = req.headers;
+			const authUser = await admin.auth().verifyIdToken(authtoken);
 
-		const result = await notesDb.findOneAndDelete({ id: noteId });
+			const { noteId } = req.params;
 
-		await usersDb.updateOne({ id: result.createdBy }, {
-			$pull: { notes: result.id },
-		});
-		
-		res.sendStatus(200);
+			const note = await notesDb.findOne({ id: noteId });
+
+			if(note.createdBy !== authUser.uid) {
+				return res.sendStatus(403);
+			}
+
+			await notesDb.deleteOne({ id: noteId });
+
+			await usersDb.updateOne({ id: note.createdBy }, {
+				$pull: { notes: note.id },
+			});
+			
+			res.sendStatus(200);
+		} catch(e) {
+			res.sendStatus(401);
+		}
 	}
 }

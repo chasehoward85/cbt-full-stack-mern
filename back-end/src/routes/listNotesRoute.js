@@ -13,7 +13,7 @@ export const listNotesRoute = {
 			const { userId } = req.params;
 
 			if(authUser.uid !== userId) {
-				res.sendStatus(403);
+				return res.sendStatus(403);
 			}
 
 			const user = await usersDb.findOne({ id: userId });
