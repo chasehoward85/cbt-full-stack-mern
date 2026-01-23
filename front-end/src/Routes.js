@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { NotesPage } from './pages/NotesPage';
 import { NotesDetailPage } from './pages/NoteDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { CreateAccountPage } from './pages/CreateAccountPage';
+import { LoginPage } from './pages/LoginPage';
+
 import { NavBar } from './components/NavBar';
 
 export const Routes = () => {
@@ -19,6 +22,12 @@ export const Routes = () => {
 					</Route>
 					<Route path="/notes/:noteId">
 						<NotesDetailPage />
+					</Route>
+					<Route path="/login">
+						<LoginPage />
+					</Route>
+					<Route path="/create-account">
+						<CreateAccountPage />
 					</Route>
 					<Route>
 						<NotFoundPage />

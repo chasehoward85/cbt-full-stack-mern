@@ -50,6 +50,10 @@ input, textarea {
 	font-style: italic;
 }
 
+.h-centered {
+	text-align: center;
+}
+
 .modal-background {
 	position: fixed;
 	z-index: 1;
