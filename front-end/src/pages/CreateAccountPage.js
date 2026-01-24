@@ -1,4 +1,5 @@
 import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
@@ -8,7 +9,11 @@ export const CreateAccountPage = () => {
 
 	const createAccount = async (email, password, confirmPassword) => {
 		if(password === confirmPassword) {
-			await createUserWithEmailAndPassword(getAuth(), email, password);
+			const result = await createUserWithEmailAndPassword(getAuth(), email, password);
+			const token = await result.user.getIdToken();
+
+			await axios.post('/users', {}, { headers: { authtoken: token }});
+		
 			history.push('/notes');
 		}
 	}
