@@ -7,6 +7,7 @@ import { NotesDetailPage } from './pages/NoteDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { CreateAccountPage } from './pages/CreateAccountPage';
 import { LoginPage } from './pages/LoginPage';
+import { NoteSharingSettingsPage } from './pages/NoteSharingSettingsPage';
 
 import { NavBar } from './components/NavBar';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -28,6 +29,9 @@ export const Routes = () => {
 					</ProtectedRoute>
 					<ProtectedRoute isLoading={isLoading} canAccess={isLoggedIn} redirectTo="/login" path="/notes/:noteId">
 						<NotesDetailPage />
+					</ProtectedRoute>
+					<ProtectedRoute isLoading={isLoading} canAccess={isLoggedIn} redirectTo="/login" path="/sharing-settings/:noteId">
+						<NoteSharingSettingsPage />
 					</ProtectedRoute>
 					<ProtectedRoute isLoading={isLoading} canAccess={!isLoggedIn} redirectTo="/notes" path="/login">
 						<LoginPage />

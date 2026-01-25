@@ -62,9 +62,21 @@ export const NotesProvider = ({ children }) => {
 			console.log(e);
 		}
 	}
+
+	const shareNote = async (noteId, email) => {
+		setNotes(notes.map(note => note.id === noteId
+			? { ...note, sharedWithEmails: (note.sharedWithEmails || []).concat(email) }
+			: note));
+	}
+
+	const unshareNote = async (noteId, email) => {
+		setNotes(notes.map(note => note.id === noteId
+			? { ...note, sharedWithEmails: note.sharedWithEmails.filter(e => e !== email) }
+			: note));
+	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote }}>
+		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
 			{children}
 		</NotesContext.Provider>
 	)
