@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
@@ -11,6 +11,8 @@ export const NotesDetailPage = () => {
 	
 	const { noteId } = useParams();
 	const note = notes.find(n => n.id === noteId);
+
+	const history = useHistory();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [updatedTitle, setUpdatedTitle] = useState((note && note.title) || '');
@@ -61,7 +63,10 @@ export const NotesDetailPage = () => {
 		<>
 		<h1>{note.title}</h1>
 		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
-		<button onClick={() => setIsEditing(true)}>Edit</button>
+		<div className="evenly-spaced">
+			<button onClick={() => history.push(`/sharing-settings/${note.id}`)}>Share</button>
+			<button onClick={() => setIsEditing(true)}>Edit</button>
+		</div>
 		</>
 	);
 }
