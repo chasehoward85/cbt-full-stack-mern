@@ -125,3 +125,12 @@ nav {
 	border-bottom: 1px solid #ccc;
 	padding: 8px;
 }
+
+.inverse-button {
+	background-color: white;
+	color: black;
+}
+
+.inverse-button:hover {
+	background-color: #eee;
+}

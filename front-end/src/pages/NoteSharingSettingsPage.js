@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 import { SharedEmails } from '../components/SharedEmails';
@@ -8,6 +8,7 @@ import { NotesContext } from '../contexts/NotesContext';
 
 export const NoteSharingSettingsPage = () => {
 	const { notes, isLoading } = useContext(NotesContext);
+	const history = useHistory();
 	
 	const { noteId } = useParams();
 	const note = notes.find(n => n.id === noteId);
@@ -22,6 +23,8 @@ export const NoteSharingSettingsPage = () => {
 
 	return (
 		<>
+		<button className="inverse-button" onClick={() => history.push(`/notes/${noteId}`)}>Back</button>
+
 		<h1>Share "{note.title}"</h1>
 		<SharedEmails
 			emails={['chase2@gmail.com', 'foo@gmail.com', 'bar@gmail.com']}
