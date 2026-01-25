@@ -111,3 +111,9 @@ nav {
 .brand-highlight {
 	color: red;
 }
+
+.error {
+	background-color: pink;
+	border-radius: 8px;
+	padding: 8px;
+}
