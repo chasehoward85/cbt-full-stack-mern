@@ -117,3 +117,11 @@ nav {
 	border-radius: 8px;
 	padding: 8px;
 }
+
+.shared-email-item {
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+	border-bottom: 1px solid #ccc;
+	padding: 8px;
+}

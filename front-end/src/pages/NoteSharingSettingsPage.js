@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
+import { SharedEmails } from '../components/SharedEmails';
 
 import { NotesContext } from '../contexts/NotesContext';
 
@@ -22,8 +23,10 @@ export const NoteSharingSettingsPage = () => {
 	return (
 		<>
 		<h1>Share "{note.title}"</h1>
-		<div>This is the shared emails list</div>
-		<div>This is the email sharing form</div>
+		<SharedEmails
+			emails={['chase2@gmail.com', 'foo@gmail.com', 'bar@gmail.com']}
+			onAdd={email => alert(`Sharing with ${email}`)}
+			onDelete={email=> alert(`Removing sharing with ${email}`)} />
 		</>
 	);
 }
