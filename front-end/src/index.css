@@ -99,6 +99,8 @@ input, textarea {
 
 nav {
 	padding: 16px;
+	display: flex;
+	justify-content: space-between;
 }
 
 .brand-logo {
@@ -108,4 +110,10 @@ nav {
 
 .brand-highlight {
 	color: red;
+}
+
+.error {
+	background-color: pink;
+	border-radius: 8px;
+	padding: 8px;
 }

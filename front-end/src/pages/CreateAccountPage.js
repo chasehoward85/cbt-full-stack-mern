@@ -1,22 +1,36 @@
+import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
 
 export const CreateAccountPage = () => {
+	const [error, setError] = useState('');
+
 	const history = useHistory();
 
 	const createAccount = async (email, password, confirmPassword) => {
-		if(password === confirmPassword) {
-			await createUserWithEmailAndPassword(getAuth(), email, password);
+		try {
+			if(password !== confirmPassword) {
+				throw new Error('Passwords do not match');
+			}
+
+			const result = await createUserWithEmailAndPassword(getAuth(), email, password);
+			const token = await result.user.getIdToken();
+
+			await axios.post('/users', {}, { headers: { authtoken: token }});
+		
 			history.push('/notes');
+		} catch(e) {
+			setError(e.message);
 		}
 	}
 
 	return (
 		<div className="centered-container">
 			<h1 className="h-centered">Create Account</h1>
-			<CreateAccountForm onSubmit={createAccount}/>
+			<CreateAccountForm error={error} onSubmit={createAccount}/>
 			<Link
 				style={{ display: 'block' }}
 				className="h-centered"

@@ -1,12 +1,23 @@
 import { useState } from 'react';
 
-export const CreateAccountForm = ({ onSubmit }) => {
+const errorMessageMap = {
+	'Firebase: Error (auth/invalid-email).': 'Please enter a valid email',
+	'Firebase: Error (auth/missing-password).': 'Please enter a password',
+	'Firebase: Error (auth/internal-error)': 'Something went wrong. Please try again',
+	'Passwords do not match': 'Passwords do not match',
+	'Firebase: Password should be at least 6 characters (auth/weak-password).': 'Your password must be at least 6 characters long',
+	'Firebase: Error (auth/email-already-in-use).': 'This email is already in use',
+}
+
+export const CreateAccountForm = ({ error, onSubmit }) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
 	return (
 		<>
+		{error && <p className="error">{errorMessageMap[error] || error}</p>}
+
 		<input
 			className="full-width space-below"
 			type="email"
