@@ -2,8 +2,26 @@ import { useState } from 'react';
 
 import { XButton } from './XButton';
 
+const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+
 export const SharedEmails = ({ emails, onAdd, onDelete }) => {
 	const [newEmail, setNewEmail] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
+
+	const onClickAdd = () => {
+		setErrorMessage('');
+		
+		if(!newEmail) {
+			return setErrorMessage('Please enter a value');
+		}
+
+		if(!emailRegex.test(newEmail)) {
+			return setErrorMessage('Please enter a valid email address');
+		}
+
+		onAdd(newEmail);
+		setNewEmail('');
+	}
 
 	return (
 		<>
@@ -16,6 +34,7 @@ export const SharedEmails = ({ emails, onAdd, onDelete }) => {
 			))}
 		</div>
 
+		{errorMessage && <p className="error">{errorMessage}</p>}
 		<input
 			className="full-width space-below"
 			type="email"
@@ -25,10 +44,7 @@ export const SharedEmails = ({ emails, onAdd, onDelete }) => {
 
 		<button
 			className="full-width"
-			onClick={() => {
-				onAdd(newEmail);
-				setNewEmail('')
-			}}
+			onClick={onClickAdd}
 		>Share</button>
 		</>
 	);

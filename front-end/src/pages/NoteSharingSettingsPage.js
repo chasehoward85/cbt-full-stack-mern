@@ -7,7 +7,7 @@ import { SharedEmails } from '../components/SharedEmails';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NoteSharingSettingsPage = () => {
-	const { notes, isLoading } = useContext(NotesContext);
+	const { notes, isLoading, shareNote, unshareNote } = useContext(NotesContext);
 	const history = useHistory();
 	
 	const { noteId } = useParams();
@@ -26,10 +26,11 @@ export const NoteSharingSettingsPage = () => {
 		<button className="inverse-button" onClick={() => history.push(`/notes/${noteId}`)}>Back</button>
 
 		<h1>Share "{note.title}"</h1>
+		{note.sharedWithEmails.length === 0 &&  <p className="weak">This note is not currently shared with anyone</p>}
 		<SharedEmails
-			emails={['chase2@gmail.com', 'foo@gmail.com', 'bar@gmail.com']}
-			onAdd={email => alert(`Sharing with ${email}`)}
-			onDelete={email=> alert(`Removing sharing with ${email}`)} />
+			emails={note.sharedWithEmails || []}
+			onAdd={email => shareNote(noteId, email)}
+			onDelete={email=> unshareNote(noteId, email)} />
 		</>
 	);
 }
