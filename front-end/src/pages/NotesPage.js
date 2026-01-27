@@ -9,7 +9,7 @@ import { Modal } from '../components/Modal';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesPage = () => {
-	const { isLoading, notes, createNote, deleteNote } = useContext(NotesContext);
+	const { isLoading, notes, sharedNotes, createNote, deleteNote } = useContext(NotesContext);
 	const history = useHistory();
 
 	const [newNoteModalIsOpen, setNewNoteModalIsOpen] = useState(false);
@@ -43,6 +43,10 @@ export const NotesPage = () => {
 		{notes.length === 0 && <p className="weak">There are currently no notes, add one!</p>}
 		<NotesList notes={notes} onRequestDelete={id => setCurrentlyDeletingNoteId(id)} onClickItem={id => history.push(`/notes/${id}`)}/>
 		<button className="full-width" onClick={() => setNewNoteModalIsOpen(true)}>+ Add a New Note</button>
+
+		<h1>Shared With Me</h1>
+		{sharedNotes.length === 0 && <p className="weak">There are currently no notes shared with you</p>}
+		<NotesList notes={sharedNotes} onClickItem={id => history.push(`/notes/${id}`)} />
 		</>
 	);
 }

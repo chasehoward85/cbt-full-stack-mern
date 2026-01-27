@@ -7,10 +7,10 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesDetailPage = () => {
-	const { notes, isLoading, updateNote } = useContext(NotesContext);
+	const { notes, sharedNotes, isLoading, updateNote } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
-	const note = notes.find(n => n.id === noteId);
+	const note = [...notes, ...sharedNotes].find(n => n.id === noteId);
 
 	const history = useHistory();
 

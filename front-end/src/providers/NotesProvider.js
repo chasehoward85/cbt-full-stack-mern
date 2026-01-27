@@ -10,15 +10,18 @@ export const NotesProvider = ({ children }) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
+	const [sharedNotes, setSharedNotes] = useState([]);
 	
 	const { user } = useUser();
 
 	useEffect(() => {
 		const loadNotes = async () => {
 			try {
-				const notes = await get(`/users/${user.uid}/notes`);
+				const {owned, shared } = await get(`/users/${user.uid}/notes`);
 
-				setNotes(notes);
+				setNotes(owned);
+				setSharedNotes(shared);
+				
 				setIsLoading(false);
 			} catch(e) {
 				setIsLoading(false);
@@ -64,19 +67,30 @@ export const NotesProvider = ({ children }) => {
 	}
 
 	const shareNote = async (noteId, email) => {
-		setNotes(notes.map(note => note.id === noteId
-			? { ...note, sharedWithEmails: (note.sharedWithEmails || []).concat(email) }
-			: note));
+		try {
+			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email });
+			setNotes(notes.map(note => note.id === noteId
+				? { ...note, sharedWith: updatedEmails }
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	const unshareNote = async (noteId, email) => {
-		setNotes(notes.map(note => note.id === noteId
-			? { ...note, sharedWithEmails: note.sharedWithEmails.filter(e => e !== email) }
-			: note));
+		try {
+			const updatedEmails = await del(`/notes/${noteId}/shared-emails/${email}`);
+
+			setNotes(notes.map(note => note.id === noteId
+				? { ...note, sharedWith: updatedEmails }
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
 	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
+		<NotesContext.Provider value={{ notes, sharedNotes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
 			{children}
 		</NotesContext.Provider>
 	)
