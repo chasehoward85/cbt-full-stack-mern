@@ -8,8 +8,13 @@ export const shareNoteRoute = {
 	method: 'post',
 	middleware: [verifyAuthToken, userOwnsNote],
 	handler: async (req, res) => {
+		const authUser = req.user;
 		const { noteId } = req.params;
 		const { email } = req.body;
+
+		if(authUser.email === email) {
+			return res.sendStatus(409)
+		}
 
 		const userWithEmail = await usersDb.findOne({ email });
 
@@ -19,6 +24,8 @@ export const shareNoteRoute = {
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
 			$addToSet: { sharedWith: email },
+		}, {
+			returnDocument: 'after',
 		});
 
 		res.json(result.sharedWith);

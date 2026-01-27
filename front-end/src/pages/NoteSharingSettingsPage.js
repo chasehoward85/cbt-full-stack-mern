@@ -26,9 +26,10 @@ export const NoteSharingSettingsPage = () => {
 		<button className="inverse-button" onClick={() => history.push(`/notes/${noteId}`)}>Back</button>
 
 		<h1>Share "{note.title}"</h1>
-		{note.sharedWithEmails.length === 0 &&  <p className="weak">This note is not currently shared with anyone</p>}
+		<p className="weak">This note is not currently shared with anyone</p>
+		
 		<SharedEmails
-			emails={note.sharedWithEmails || []}
+			emails={note.sharedWith || []}
 			onAdd={email => shareNote(noteId, email)}
 			onDelete={email=> unshareNote(noteId, email)} />
 		</>

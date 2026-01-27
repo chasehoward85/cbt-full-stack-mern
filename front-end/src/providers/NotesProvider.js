@@ -64,14 +64,19 @@ export const NotesProvider = ({ children }) => {
 	}
 
 	const shareNote = async (noteId, email) => {
-		setNotes(notes.map(note => note.id === noteId
-			? { ...note, sharedWithEmails: (note.sharedWithEmails || []).concat(email) }
-			: note));
+		try {
+			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email });
+			setNotes(notes.map(note => note.id === noteId
+				? { ...note, sharedWith: updatedEmails }
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	const unshareNote = async (noteId, email) => {
 		setNotes(notes.map(note => note.id === noteId
-			? { ...note, sharedWithEmails: note.sharedWithEmails.filter(e => e !== email) }
+			? { ...note, sharedWith: note.sharedWith.filter(e => e !== email) }
 			: note));
 	}
 	
