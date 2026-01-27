@@ -75,9 +75,15 @@ export const NotesProvider = ({ children }) => {
 	}
 
 	const unshareNote = async (noteId, email) => {
-		setNotes(notes.map(note => note.id === noteId
-			? { ...note, sharedWith: note.sharedWith.filter(e => e !== email) }
-			: note));
+		try {
+			const updatedEmails = await del(`/notes/${noteId}/shared-emails/${email}`);
+
+			setNotes(notes.map(note => note.id === noteId
+				? { ...note, sharedWith: updatedEmails }
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
 	}
 	
 	return (
