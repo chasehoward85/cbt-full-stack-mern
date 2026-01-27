@@ -13,7 +13,7 @@ export const shareNoteRoute = {
 		const { email } = req.body;
 
 		if(authUser.email === email) {
-			return res.sendStatus(409)
+			return res.sendStatus(409);
 		}
 
 		const userWithEmail = await usersDb.findOne({ email });
