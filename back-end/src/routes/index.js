@@ -4,6 +4,7 @@ import { updateNoteRoute } from './updateNoteRoute';
 import { deleteNoteRoute } from './deleteNoteRoute';
 
 import { shareNoteRoute } from './shareNoteRoute';
+import { unshareNoteRoute } from './unshareNoteRoute';
 
 import { createUserRoute } from './createUserRoute';
 
@@ -14,6 +15,7 @@ export const routes = [
 	deleteNoteRoute,
 
 	shareNoteRoute,
+	unshareNoteRoute,
 
 	createUserRoute,
 ]
