@@ -17,8 +17,10 @@ export const listNotesRoute = {
 
 		const user = await usersDb.findOne({ id: userId });
 		
-		const notes = await Promise.all(user.notes.map(id => notesDb.findOne({ id })));
+		const ownedNotes = await Promise.all(user.notes.map(id => notesDb.findOne({ id })));
 
-		res.json(notes);
+		const sharedWithUserNotes = await notesDb.find({ sharedWith: authUser.email }).toArray();
+
+		res.json({ owned: ownedNotes, shared: sharedWithUserNotes });
 	}
 }

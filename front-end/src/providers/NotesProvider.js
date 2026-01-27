@@ -10,15 +10,18 @@ export const NotesProvider = ({ children }) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
+	const [sharedNotes, setSharedNotes] = useState([]);
 	
 	const { user } = useUser();
 
 	useEffect(() => {
 		const loadNotes = async () => {
 			try {
-				const notes = await get(`/users/${user.uid}/notes`);
+				const {owned, shared } = await get(`/users/${user.uid}/notes`);
 
-				setNotes(notes);
+				setNotes(owned);
+				setSharedNotes(shared);
+				
 				setIsLoading(false);
 			} catch(e) {
 				setIsLoading(false);
@@ -87,7 +90,7 @@ export const NotesProvider = ({ children }) => {
 	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
+		<NotesContext.Provider value={{ notes, sharedNotes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
 			{children}
 		</NotesContext.Provider>
 	)
