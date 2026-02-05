@@ -6,7 +6,7 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 
 import { NotesContext } from '../contexts/NotesContext';
 
-export const NotesDetailPage = () => {
+export const NoteDetailPage = ({ isOwner }) => {
 	const { notes, sharedNotes, isLoading, updateNote } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
@@ -63,10 +63,10 @@ export const NotesDetailPage = () => {
 		<>
 		<h1>{note.title}</h1>
 		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
-		<div className="evenly-spaced">
+		{isOwner && <div className="evenly-spaced">
 			<button onClick={() => history.push(`/sharing-settings/${note.id}`)}>Share</button>
 			<button onClick={() => setIsEditing(true)}>Edit</button>
-		</div>
+		</div>}
 		</>
 	);
 }

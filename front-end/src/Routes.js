@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { useUser } from './hooks/useUser';
 
 import { NotesPage } from './pages/NotesPage';
-import { NotesDetailPage } from './pages/NoteDetailPage';
+import { NoteDetailPage } from './pages/NoteDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { CreateAccountPage } from './pages/CreateAccountPage';
 import { LoginPage } from './pages/LoginPage';
@@ -28,7 +28,10 @@ export const Routes = () => {
 						<NotesPage />
 					</ProtectedRoute>
 					<ProtectedRoute isLoading={isLoading} canAccess={isLoggedIn} redirectTo="/login" path="/notes/:noteId">
-						<NotesDetailPage />
+						<NoteDetailPage isOwner />
+					</ProtectedRoute>
+					<ProtectedRoute isLoading={isLoading} canAccess={isLoggedIn} redirectTo="/login" path="/shared/:noteId">
+						<NoteDetailPage />
 					</ProtectedRoute>
 					<ProtectedRoute isLoading={isLoading} canAccess={isLoggedIn} redirectTo="/login" path="/sharing-settings/:noteId">
 						<NoteSharingSettingsPage />
