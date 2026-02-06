@@ -19,7 +19,7 @@ export const shareNoteRoute = {
 		const userWithEmail = await usersDb.findOne({ email });
 
 		if(!userWithEmail) {
-			await res.status(404).json({ message: 'A user with that email does not exist' });
+			return res.status(404).json({ message: 'A user with that email does not exist' });
 		}
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
