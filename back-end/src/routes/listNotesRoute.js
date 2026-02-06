@@ -19,8 +19,17 @@ export const listNotesRoute = {
 		
 		const ownedNotes = await Promise.all(user.notes.map(id => notesDb.findOne({ id })));
 
-		const sharedWithUserNotes = await notesDb.find({ sharedWith: authUser.email }).toArray();
+		const sharedWithUserNotes = await notesDb.find({
+			sharedWith: {
+				$elemMatch: { email: authUser.email }
+			}
+		}).toArray();
 
-		res.json({ owned: ownedNotes, shared: sharedWithUserNotes });
+		const sharedWithuserNotesFormatted = sharedWithUserNotes.map(note => ({
+			...note,
+			permissionLevel: note.sharedWith.find(setting => setting.email === user.email).role,
+		}));
+
+		res.json({ owned: ownedNotes, shared: sharedWithuserNotesFormatted });
 	}
 }

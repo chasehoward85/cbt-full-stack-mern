@@ -23,7 +23,7 @@ export const shareNoteRoute = {
 		}
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
-			$addToSet: { sharedWith: email },
+			$push: { sharedWith: { id: userWithEmail.id, email, role: 'view' } },
 		}, {
 			returnDocument: 'after',
 		});
