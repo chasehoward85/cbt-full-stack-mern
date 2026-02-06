@@ -66,9 +66,9 @@ export const NotesProvider = ({ children }) => {
 		}
 	}
 
-	const shareNote = async (noteId, email) => {
+	const shareNote = async (noteId, email, role) => {
 		try {
-			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email });
+			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email, role });
 			setNotes(notes.map(note => note.id === noteId
 				? { ...note, sharedWith: updatedEmails }
 				: note));

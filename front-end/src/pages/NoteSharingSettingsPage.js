@@ -29,8 +29,8 @@ export const NoteSharingSettingsPage = () => {
 		<p className="weak">This note is not currently shared with anyone</p>
 		
 		<SharedEmails
-			emails={(note.sharedWith || []).map(setting => setting.email)}
-			onAdd={email => shareNote(noteId, email)}
+			sharingSettings={note.sharedWith || []}
+			onAdd={({ email, role }) => shareNote(noteId, email, role)}
 			onDelete={email=> unshareNote(noteId, email)} />
 		</>
 	);

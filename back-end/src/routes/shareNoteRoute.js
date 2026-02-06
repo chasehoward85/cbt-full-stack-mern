@@ -10,7 +10,7 @@ export const shareNoteRoute = {
 	handler: async (req, res) => {
 		const authUser = req.user;
 		const { noteId } = req.params;
-		const { email } = req.body;
+		const { email, role } = req.body;
 
 		if(authUser.email === email) {
 			return res.sendStatus(409);
@@ -23,7 +23,7 @@ export const shareNoteRoute = {
 		}
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
-			$push: { sharedWith: { id: userWithEmail.id, email, role: 'view' } },
+			$push: { sharedWith: { id: userWithEmail.id, email, role: role } },
 		}, {
 			returnDocument: 'after',
 		});
