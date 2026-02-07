@@ -2,39 +2,27 @@ import { useState } from 'react';
 
 import { XButton } from './XButton';
 
-const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+// const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
-export const SharedEmails = ({ emails, onAdd, onDelete }) => {
+const VIEW = 'view';
+const EDIT = 'edit'
+
+export const SharedEmails = ({ sharingSettings, onAdd, onDelete }) => {
 	const [newEmail, setNewEmail] = useState('');
-	const [errorMessage, setErrorMessage] = useState('');
-
-	const onClickAdd = () => {
-		setErrorMessage('');
-		
-		if(!newEmail) {
-			return setErrorMessage('Please enter a value');
-		}
-
-		if(!emailRegex.test(newEmail)) {
-			return setErrorMessage('Please enter a valid email address');
-		}
-
-		onAdd(newEmail);
-		setNewEmail('');
-	}
+	const [selectedPermission, setSelectedPermission] = useState(VIEW);
 
 	return (
 		<>
 		<div className="space-below">
-			{emails.map(email => (
+			{sharingSettings.map(({ email, role }) => (
 				<div className="shared-email-item">
 					<h3>{email}</h3>
+					<p>{role}</p>
 					<XButton onClick={() => onDelete(email)} />
 				</div>
 			))}
 		</div>
 
-		{errorMessage && <p className="error">{errorMessage}</p>}
 		<input
 			className="full-width space-below"
 			type="email"
@@ -42,9 +30,39 @@ export const SharedEmails = ({ emails, onAdd, onDelete }) => {
 			value={newEmail}
 			onChange={e => setNewEmail(e.target.value)} />
 
+		<div>
+			Permission Level:
+			
+			<div>
+				<label>
+					<input
+						type="radio"
+						value={VIEW}
+						checked={selectedPermission === VIEW}
+						onChange={() => setSelectedPermission(VIEW)} />
+
+					Can View
+				</label>
+			</div>
+			<div>
+				<label>
+					<input
+						type="radio"
+						value={EDIT}
+						checked={selectedPermission === EDIT}
+						onChange={() => setSelectedPermission(EDIT)} />
+						
+					Can Edit
+				</label>
+			</div>
+		</div>
+
 		<button
 			className="full-width"
-			onClick={onClickAdd}
+			onClick={() => {
+				onAdd({ email: newEmail, role: selectedPermission });
+				setNewEmail('');
+			}}
 		>Share</button>
 		</>
 	);

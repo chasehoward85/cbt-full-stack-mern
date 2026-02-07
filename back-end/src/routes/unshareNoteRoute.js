@@ -11,7 +11,7 @@ export const unshareNoteRoute = {
 		const { noteId, email } = req.params
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
-			$pull: { sharedWith: email }
+			$pull: { sharedWith: { email } }
 		}, {
 			returnDocument: 'after',
 		});

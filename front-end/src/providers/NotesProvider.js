@@ -52,6 +52,7 @@ export const NotesProvider = ({ children }) => {
 			const updatedNote = await put(`/notes/${id}`, { title, content });
 
 			setNotes(notes.map(note => note.id === id ? updatedNote : note));
+			setSharedNotes(sharedNotes.map(note => note.id === id ? updatedNote : note));
 		} catch(e) {
 			console.log(e);
 		}
@@ -66,9 +67,9 @@ export const NotesProvider = ({ children }) => {
 		}
 	}
 
-	const shareNote = async (noteId, email) => {
+	const shareNote = async (noteId, email, role) => {
 		try {
-			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email });
+			const updatedEmails = await post(`/notes/${noteId}/shared-emails`, { email, role });
 			setNotes(notes.map(note => note.id === noteId
 				? { ...note, sharedWith: updatedEmails }
 				: note));

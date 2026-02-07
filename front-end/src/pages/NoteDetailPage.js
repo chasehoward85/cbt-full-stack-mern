@@ -5,18 +5,28 @@ import ReactMarkdown from 'react-markdown';
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 
 import { NotesContext } from '../contexts/NotesContext';
+import { useEffect } from 'react';
 
-export const NotesDetailPage = () => {
+export const NoteDetailPage = ({ isOwner }) => {
 	const { notes, sharedNotes, isLoading, updateNote } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
 	const note = [...notes, ...sharedNotes].find(n => n.id === noteId);
+	const { role } = note || {};
+	const canEdit = role === 'edit';
 
 	const history = useHistory();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [updatedTitle, setUpdatedTitle] = useState((note && note.title) || '');
 	const [updatedContent, setUpdatedContent] = useState((note && note.content) || '');
+
+	useEffect(() => {
+		if(note) {
+			setUpdatedTitle(note.title);
+			setUpdatedContent(note.content);
+		}
+	}, [note]);
 
 	const saveChanges = async () => {
 		await updateNote(noteId, { title: updatedTitle, content: updatedContent });
@@ -64,8 +74,8 @@ export const NotesDetailPage = () => {
 		<h1>{note.title}</h1>
 		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
 		<div className="evenly-spaced">
-			<button onClick={() => history.push(`/sharing-settings/${note.id}`)}>Share</button>
-			<button onClick={() => setIsEditing(true)}>Edit</button>
+			{isOwner && <button onClick={() => history.push(`/sharing-settings/${note.id}`)}>Share</button>}
+			{(isOwner || canEdit) && <button onClick={() => setIsEditing(true)}>Edit</button>}
 		</div>
 		</>
 	);

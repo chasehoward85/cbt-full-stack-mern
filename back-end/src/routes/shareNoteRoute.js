@@ -10,7 +10,7 @@ export const shareNoteRoute = {
 	handler: async (req, res) => {
 		const authUser = req.user;
 		const { noteId } = req.params;
-		const { email } = req.body;
+		const { email, role } = req.body;
 
 		if(authUser.email === email) {
 			return res.sendStatus(409);
@@ -19,11 +19,11 @@ export const shareNoteRoute = {
 		const userWithEmail = await usersDb.findOne({ email });
 
 		if(!userWithEmail) {
-			await res.status(404).json({ message: 'A user with that email does not exist' });
+			return res.status(404).json({ message: 'A user with that email does not exist' });
 		}
 
 		const result = await notesDb.findOneAndUpdate({ id: noteId }, {
-			$addToSet: { sharedWith: email },
+			$push: { sharedWith: { id: userWithEmail.id, email, role: role } },
 		}, {
 			returnDocument: 'after',
 		});

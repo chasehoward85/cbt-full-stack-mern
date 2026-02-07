@@ -16,10 +16,10 @@ export const NotesList = ({ notes, onRequestDelete, onClickItem }) => {
 					<p>{getWordCount(notes.content)} word(s)</p>
 				</div>
 
-				<XButton onClick={e => {
+				{onRequestDelete && <XButton onClick={e => {
 					e.stopPropagation();
 					onRequestDelete(notes.id);
-				}} />
+				}} />}
 			</div>
 		))}
 		</>

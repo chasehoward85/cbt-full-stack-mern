@@ -46,7 +46,7 @@ export const NotesPage = () => {
 
 		<h1>Shared With Me</h1>
 		{sharedNotes.length === 0 && <p className="weak">There are currently no notes shared with you</p>}
-		<NotesList notes={sharedNotes} onClickItem={id => history.push(`/notes/${id}`)} />
+		<NotesList notes={sharedNotes} onClickItem={id => history.push(`/shared/${id}`)} />
 		</>
 	);
 }
