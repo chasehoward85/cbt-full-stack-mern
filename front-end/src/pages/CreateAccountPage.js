@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
 
@@ -17,11 +17,13 @@ export const CreateAccountPage = () => {
 			}
 
 			const result = await createUserWithEmailAndPassword(getAuth(), email, password);
+			await signOut(getAuth());
+
 			const token = await result.user.getIdToken();
 
 			await axios.post('/users', {}, { headers: { authtoken: token }});
 		
-			history.push('/notes');
+			history.push('/please-verify');
 		} catch(e) {
 			setError(e.message);
 		}
