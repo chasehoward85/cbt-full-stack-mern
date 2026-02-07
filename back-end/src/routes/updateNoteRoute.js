@@ -1,12 +1,14 @@
 import { notesDb } from '../db';
 
-import { userOwnsNote } from '../middleware/userOwnsNote';
+import { userCanEditNote } from '../middleware/userCanEditNote';
 import { verifyAuthToken } from '../middleware/verifyAuthToken';
+
+import { formatSharedNote } from '../util/formatSharedNote';
 
 export const updateNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'put',
-	middleware: [verifyAuthToken, userOwnsNote],
+	middleware: [verifyAuthToken, userCanEditNote],
 	handler: async (req, res) => {
 		const { noteId } = req.params;
 		const { title, content } = req.body;
@@ -17,6 +19,6 @@ export const updateNoteRoute = {
 			returnDocument: 'after',
 		});
 
-		res.json(updatedNote);
+		res.json(formatSharedNote(updatedNote, req.user));
 	}
 }

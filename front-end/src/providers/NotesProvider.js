@@ -52,6 +52,7 @@ export const NotesProvider = ({ children }) => {
 			const updatedNote = await put(`/notes/${id}`, { title, content });
 
 			setNotes(notes.map(note => note.id === id ? updatedNote : note));
+			setSharedNotes(sharedNotes.map(note => note.id === id ? updatedNote : note));
 		} catch(e) {
 			console.log(e);
 		}

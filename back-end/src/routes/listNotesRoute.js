@@ -1,6 +1,7 @@
 import { usersDb, notesDb } from '../db';
 
 import { verifyAuthToken } from '../middleware/verifyAuthToken';
+import { formatSharedNote } from '../util/formatSharedNote';
 
 export const listNotesRoute = {
 	path: '/users/:userId/notes',
@@ -25,11 +26,8 @@ export const listNotesRoute = {
 			}
 		}).toArray();
 
-		const sharedWithuserNotesFormatted = sharedWithUserNotes.map(note => ({
-			...note,
-			permissionLevel: note.sharedWith.find(setting => setting.email === user.email).role,
-		}));
+		const sharedWithUserNotesFormatted = sharedWithUserNotes.map(note => formatSharedNote(note, user));
 
-		res.json({ owned: ownedNotes, shared: sharedWithuserNotesFormatted });
+		res.json({ owned: ownedNotes, shared: sharedWithUserNotesFormatted });
 	}
 }
