@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
 
@@ -16,12 +15,7 @@ export const CreateAccountPage = () => {
 				throw new Error('Passwords do not match');
 			}
 
-			const result = await createUserWithEmailAndPassword(getAuth(), email, password);
-			await signOut(getAuth());
-
-			const token = await result.user.getIdToken();
-
-			await axios.post('/users', {}, { headers: { authtoken: token }});
+			await axios.post('/users', { email, password });
 		
 			history.push('/please-verify');
 		} catch(e) {

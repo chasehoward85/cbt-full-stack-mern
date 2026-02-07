@@ -1,29 +1,31 @@
+import * as admin from 'firebase-admin';
+
 import { usersDb } from '../db';
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
 
 export const createUserRoute = {
 	path: '/users',
 	method: 'post',
-	middleware: [verifyAuthToken],
+	middleware: [],
 	handler: async (req, res) => {
-		const authUser = req.user;
-		
-		const existingUser = await usersDb.findOne({ email: authUser.email });
+		const { email, password } = req.body;
+
+		const existingUser = await usersDb.findOne({ email });
 		if(existingUser) {
 			return res.sendStatus(409);
 		}
 
+		const user = await admin.auth().createUser({
+			email,
+			password,
+			emailVerified: false,
+		});
+
 		const newUser = {
-			id: authUser.uid,
-			email: authUser.email,
+			id: user.uid,
+			email: email,
 			notes: [],
 		};
 
-		const result = await usersDb.insertOne(newUser);
-
-		res.json({
-			...newUser,
-			_id: result.insertedId,
-		});
+		res.sendStatus(200);
 	}
 }
