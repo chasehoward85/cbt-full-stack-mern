@@ -1,6 +1,9 @@
 import * as admin from 'firebase-admin';
+import sendgrid from '@sendgrid/mail';
 
 import { usersDb } from '../db';
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const createUserRoute = {
 	path: '/users',
@@ -25,6 +28,17 @@ export const createUserRoute = {
 			email: email,
 			notes: [],
 		};
+
+		await usersDb.insertOne(newUser);
+
+		const messageData = {
+			to: email,
+			from: 'chasehoward85@gmail.com',
+			subject: 'Email Verification',
+			text: 'Hello! You\'ve created an account. That is all'
+		};
+
+		await sendgrid.send(messageData);
 
 		res.sendStatus(200);
 	}
