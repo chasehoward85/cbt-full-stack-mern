@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import sendgrid from '@sendgrid/mail';
+import { v4 as uuid } from 'uuid';
 
 import { usersDb } from '../db';
 
@@ -23,10 +24,13 @@ export const createUserRoute = {
 			emailVerified: false,
 		});
 
+		const verificationCode = uuid();
+
 		const newUser = {
 			id: user.uid,
 			email: email,
 			notes: [],
+			verificationCode,
 		};
 
 		await usersDb.insertOne(newUser);
@@ -35,7 +39,10 @@ export const createUserRoute = {
 			to: email,
 			from: 'chasehoward85@gmail.com',
 			subject: 'Email Verification',
-			text: 'Hello! You\'ve created an account. That is all'
+			text: `
+				Hello! You just signed up for our website.
+				Please click this link to verify your email: http://localhost:3000/verify/${verificationCode}
+			`
 		};
 
 		await sendgrid.send(messageData);

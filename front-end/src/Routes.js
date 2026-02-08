@@ -9,6 +9,7 @@ import { CreateAccountPage } from './pages/CreateAccountPage';
 import { LoginPage } from './pages/LoginPage';
 import { NoteSharingSettingsPage } from './pages/NoteSharingSettingsPage';
 import { PleaseVeirfyEmailPage } from './pages/PleaseVerifyEmailPage';
+import { VerificationLandingPage } from './pages/VerificationLandingPage';
 
 import { NavBar } from './components/NavBar';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -45,6 +46,9 @@ export const Routes = () => {
 					</ProtectedRoute>
 					<Route path="/please-verify">
 						<PleaseVeirfyEmailPage />
+					</Route>
+					<Route path="/verify/:verificationCode">
+						<VerificationLandingPage />
 					</Route>
 					<Route>
 						<NotFoundPage />
