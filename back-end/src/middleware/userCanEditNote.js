@@ -6,7 +6,7 @@ export const userCanEditNote = async (req, res, next) => {
 
 	const note = await notesDb.findOne({ id: noteId });
 
-	const isOwner = note.createdBy !== authUser.uid;
+	const isOwner = note.createdBy === authUser.uid;
 	const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === authUser.uid);
 	const hasEditAccess = userPermission && userPermission.role === 'edit';
 
