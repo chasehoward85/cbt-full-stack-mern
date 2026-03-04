@@ -1,12 +1,14 @@
 import { Route, Redirect } from 'react-router-dom';
 
-export const ProtectedRoute = ({ canAccess, isLoading, redirectTo, ...props }) => {
+export const ProtectedRoute = ({ isLoading, redirectRules = [], ...props }) => {
 	if(isLoading) {
 		return <p>Loading...</p>
 	}
 
-	if(!canAccess) {
-		return <Redirect to={redirectTo} />
+	const matchingRule = redirectRules.find(rule => !rule.check);
+
+	if(matchingRule) {
+		return <Redirect to={matchingRule.redirectTo} />
 	}
 
 	return (

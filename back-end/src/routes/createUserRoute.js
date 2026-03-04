@@ -1,29 +1,52 @@
+import * as admin from 'firebase-admin';
+import sendgrid from '@sendgrid/mail';
+import { v4 as uuid } from 'uuid';
+
 import { usersDb } from '../db';
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const createUserRoute = {
 	path: '/users',
 	method: 'post',
-	middleware: [verifyAuthToken],
+	middleware: [],
 	handler: async (req, res) => {
-		const authUser = req.user;
-		
-		const existingUser = await usersDb.findOne({ email: authUser.email });
+		const { email, password } = req.body;
+
+		const existingUser = await usersDb.findOne({ email });
 		if(existingUser) {
 			return res.sendStatus(409);
 		}
 
+		const user = await admin.auth().createUser({
+			email,
+			password,
+			emailVerified: false,
+		});
+
+		const verificationCode = uuid();
+
 		const newUser = {
-			id: authUser.uid,
-			email: authUser.email,
+			id: user.uid,
+			email: email,
 			notes: [],
+			verificationCode,
 		};
 
-		const result = await usersDb.insertOne(newUser);
+		await usersDb.insertOne(newUser);
 
-		res.json({
-			...newUser,
-			_id: result.insertedId,
-		});
+		const messageData = {
+			to: email,
+			from: 'chasehoward85@gmail.com',
+			subject: 'Email Verification',
+			text: `
+				Hello! You just signed up for our website.
+				Please click this link to verify your email: http://localhost:3000/verify/${verificationCode}
+			`
+		};
+
+		await sendgrid.send(messageData);
+
+		res.sendStatus(200);
 	}
 }

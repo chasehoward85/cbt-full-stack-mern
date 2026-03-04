@@ -2,11 +2,12 @@ import { notesDb } from '../db';
 
 import { userOwnsNote } from '../middleware/userOwnsNote';
 import { verifyAuthToken } from '../middleware/verifyAuthToken';
+import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
 
 export const unshareNoteRoute = {
 	path: '/notes/:noteId/shared-emails/:email',
 	method: 'delete',
-	middleware: [verifyAuthToken, userOwnsNote],
+	middleware: [verifyAuthToken, userEmailIsVerified, userOwnsNote],
 	handler: async (req, res) => {
 		const { noteId, email } = req.params
 

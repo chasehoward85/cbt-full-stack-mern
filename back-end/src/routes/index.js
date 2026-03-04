@@ -7,6 +7,7 @@ import { shareNoteRoute } from './shareNoteRoute';
 import { unshareNoteRoute } from './unshareNoteRoute';
 
 import { createUserRoute } from './createUserRoute';
+import { verifyEmailRoute } from './verifyEmailRoute';
 
 export const routes = [
 	listNotesRoute,
@@ -18,4 +19,5 @@ export const routes = [
 	unshareNoteRoute,
 
 	createUserRoute,
+	verifyEmailRoute,
 ]
