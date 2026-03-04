@@ -4,6 +4,7 @@ import { updateNoteRoute } from './updateNoteRoute';
 import { deleteNoteRoute } from './deleteNoteRoute';
 
 import { enableLinkSharingRoute } from './enableLinkSharingRoute';
+import { disableLinkSharingRoute } from './disableLinkSharingRoute';
 
 import { shareNoteRoute } from './shareNoteRoute';
 import { unshareNoteRoute } from './unshareNoteRoute';
@@ -18,6 +19,7 @@ export const routes = [
 	deleteNoteRoute,
 
 	enableLinkSharingRoute,
+	disableLinkSharingRoute,
 
 	shareNoteRoute,
 	unshareNoteRoute,
