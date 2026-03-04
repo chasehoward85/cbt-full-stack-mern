@@ -89,9 +89,55 @@ export const NotesProvider = ({ children }) => {
 			console.log(e);
 		}
 	}
+
+	const enableLinkSharing = async (noteId) => {
+		try {
+			const updatedNote = await put(`/notes/${noteId}/enable-link-sharing`);
+
+			setNotes(notes.map(note => note.id === noteId
+				? updatedNote
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
+	const disableLinkSharing = async (noteId) => {
+		try {
+			const updatedNote = await put(`/notes/${noteId}/disable-link-sharing`);
+
+			setNotes(notes.map(note => note.id === noteId
+				? updatedNote
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
+	const getLinkSharedNote = async (linkSharingHash) => {
+		try {
+			const note = await get(`/link-sharing/${linkSharingHash}`);
+
+			return note;
+		} catch(e) {
+			return undefined;
+		}
+	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, sharedNotes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
+		<NotesContext.Provider value={{
+			notes,
+			sharedNotes,
+			isLoading,
+			createNote,
+			deleteNote,
+			updateNote,
+			shareNote,
+			unshareNote,
+			enableLinkSharing,
+			disableLinkSharing,
+			getLinkSharedNote
+		}}>
 			{children}
 		</NotesContext.Provider>
 	)
