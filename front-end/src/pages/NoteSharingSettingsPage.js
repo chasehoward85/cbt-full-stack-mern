@@ -21,6 +21,16 @@ export const NoteSharingSettingsPage = () => {
 		return <NoteNotFoundPage />
 	}
 
+	const {linkSharingEnabled, linkSharingHash } = note;
+
+	const enableLinkSharing = async () => {
+		alert('Enabling link sharing');
+	}
+
+	const disableLinkSharing = async () => {
+		alert('Disabling link sharing');
+	}
+
 	return (
 		<>
 		<button className="inverse-button" onClick={() => history.push(`/notes/${noteId}`)}>Back</button>
@@ -32,6 +42,13 @@ export const NoteSharingSettingsPage = () => {
 			sharingSettings={note.sharedWith || []}
 			onAdd={({ email, role }) => shareNote(noteId, email, role)}
 			onDelete={email=> unshareNote(noteId, email)} />
+
+		<div>
+			<p>{linkSharingEnabled ? `http://localhost:8080/link-sharing/${linkSharingHash}` : 'Link sharing is disabled'}</p>
+
+			{!linkSharingEnabled && <button onClick={enableLinkSharing}>Enable Link Sharing</button>}
+			{linkSharingEnabled && <button onClick={disableLinkSharing}>Disable Link Sharing</button>}
+		</div>
 		</>
 	);
 }
