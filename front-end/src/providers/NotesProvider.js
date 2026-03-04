@@ -89,9 +89,31 @@ export const NotesProvider = ({ children }) => {
 			console.log(e);
 		}
 	}
+
+	const enableLinkSharing = async (noteId) => {
+		try {
+			const updatedNote = await put(`/notes/${noteId}/enable-link-sharing`);
+
+			setNotes(notes.map(note => note.id === noteId
+				? updatedNote
+				: note));
+		} catch(e) {
+			console.log(e);
+		}
+	}
 	
 	return (
-		<NotesContext.Provider value={{ notes, sharedNotes, isLoading, createNote, deleteNote, updateNote, shareNote, unshareNote }}>
+		<NotesContext.Provider value={{
+			notes,
+			sharedNotes,
+			isLoading,
+			createNote,
+			deleteNote,
+			updateNote,
+			shareNote,
+			unshareNote,
+			enableLinkSharing,
+		}}>
 			{children}
 		</NotesContext.Provider>
 	)

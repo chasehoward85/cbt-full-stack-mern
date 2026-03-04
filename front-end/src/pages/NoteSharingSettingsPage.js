@@ -7,7 +7,7 @@ import { SharedEmails } from '../components/SharedEmails';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NoteSharingSettingsPage = () => {
-	const { notes, isLoading, shareNote, unshareNote } = useContext(NotesContext);
+	const { notes, isLoading, shareNote, unshareNote, enableLinkSharing, /* disableLinkSharing */ } = useContext(NotesContext);
 	const history = useHistory();
 	
 	const { noteId } = useParams();
@@ -23,11 +23,11 @@ export const NoteSharingSettingsPage = () => {
 
 	const {linkSharingEnabled, linkSharingHash } = note;
 
-	const enableLinkSharing = async () => {
-		alert('Enabling link sharing');
+	const onEnableLinkSharing = async () => {
+		await enableLinkSharing(noteId);
 	}
 
-	const disableLinkSharing = async () => {
+	const onDisableLinkSharing = async () => {
 		alert('Disabling link sharing');
 	}
 
@@ -46,8 +46,8 @@ export const NoteSharingSettingsPage = () => {
 		<div>
 			<p>{linkSharingEnabled ? `http://localhost:8080/link-sharing/${linkSharingHash}` : 'Link sharing is disabled'}</p>
 
-			{!linkSharingEnabled && <button onClick={enableLinkSharing}>Enable Link Sharing</button>}
-			{linkSharingEnabled && <button onClick={disableLinkSharing}>Disable Link Sharing</button>}
+			{!linkSharingEnabled && <button onClick={onEnableLinkSharing}>Enable Link Sharing</button>}
+			{linkSharingEnabled && <button onClick={onDisableLinkSharing}>Disable Link Sharing</button>}
 		</div>
 		</>
 	);
