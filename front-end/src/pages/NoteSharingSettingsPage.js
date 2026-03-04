@@ -44,7 +44,7 @@ export const NoteSharingSettingsPage = () => {
 			onDelete={email=> unshareNote(noteId, email)} />
 
 		<div>
-			<p>{linkSharingEnabled ? `http://localhost:8080/link-sharing/${linkSharingHash}` : 'Link sharing is disabled'}</p>
+			<p>{linkSharingEnabled ? `http://localhost:3000/link-sharing/${linkSharingHash}` : 'Link sharing is disabled'}</p>
 
 			{!linkSharingEnabled && <button onClick={onEnableLinkSharing}>Enable Link Sharing</button>}
 			{linkSharingEnabled && <button onClick={onDisableLinkSharing}>Disable Link Sharing</button>}
