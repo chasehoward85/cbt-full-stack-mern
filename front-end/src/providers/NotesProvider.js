@@ -113,6 +113,16 @@ export const NotesProvider = ({ children }) => {
 			console.log(e);
 		}
 	}
+
+	const getLinkSharedNote = async (linkSharingHash) => {
+		try {
+			const note = await get(`/link-sharing/${linkSharingHash}`);
+
+			return note;
+		} catch(e) {
+			return undefined;
+		}
+	}
 	
 	return (
 		<NotesContext.Provider value={{
@@ -126,6 +136,7 @@ export const NotesProvider = ({ children }) => {
 			unshareNote,
 			enableLinkSharing,
 			disableLinkSharing,
+			getLinkSharedNote
 		}}>
 			{children}
 		</NotesContext.Provider>

@@ -5,6 +5,7 @@ import { deleteNoteRoute } from './deleteNoteRoute';
 
 import { enableLinkSharingRoute } from './enableLinkSharingRoute';
 import { disableLinkSharingRoute } from './disableLinkSharingRoute';
+import { getNoteByLinkSharingHashRoute } from './getNoteByLinkSharingHashRoute';
 
 import { shareNoteRoute } from './shareNoteRoute';
 import { unshareNoteRoute } from './unshareNoteRoute';
@@ -20,6 +21,7 @@ export const routes = [
 
 	enableLinkSharingRoute,
 	disableLinkSharingRoute,
+	getNoteByLinkSharingHashRoute,
 
 	shareNoteRoute,
 	unshareNoteRoute,
