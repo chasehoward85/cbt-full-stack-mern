@@ -3,6 +3,7 @@
 - react-markdown
 - axios
 - firebase
+- socket.io-client
 
 # Back End
 - express
@@ -10,6 +11,7 @@
 - mongodb
 - firebase-admin
 - @sendgrid/mail
+- socket.io
 - Dev Dependencies (--save-dev)
 	- @babel/core @babel/node @babel/preset-env
 	- nodemon

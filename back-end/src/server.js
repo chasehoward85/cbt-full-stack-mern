@@ -1,4 +1,6 @@
 import express from 'express';
+import http from 'http';
+import socketIo from 'socket.io';
 import * as admin from 'firebase-admin';
 
 import { initializeDbConnection } from './db';
@@ -13,6 +15,18 @@ admin.initializeApp({ credential: admin.credential.cert(JSON.parse(process.env.F
 const app = express();
 app.use(express.json());
 
+const server = http.createServer(app);
+const io = socketIo(server, {
+	cors: {
+		origin: '*',
+		methods: '*',
+	}
+});
+
+io.on('connection', () => {
+	console.log('A new client just connected!');
+});
+
 const start = async () => {
 	await initializeDbConnection();
 
@@ -20,7 +34,7 @@ const start = async () => {
 		app[route.method](route.path, ...route.middleware, route.handler);
 	});
 
-	app.listen(8080, () => {
+	server.listen(8080, () => {
 		console.log('Server is listening on port 8080');
 	});
 }

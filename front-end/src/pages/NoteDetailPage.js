@@ -1,11 +1,11 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import socketIoClient from 'socket.io-client';
 
 import { NoteNotFoundPage } from './NoteNotFoundPage';
 
 import { NotesContext } from '../contexts/NotesContext';
-import { useEffect } from 'react';
 
 export const NoteDetailPage = ({ isOwner }) => {
 	const { notes, sharedNotes, isLoading, updateNote } = useContext(NotesContext);
@@ -17,9 +17,19 @@ export const NoteDetailPage = ({ isOwner }) => {
 
 	const history = useHistory();
 
+	const [socket, setSocket] = useState(null);
+
 	const [isEditing, setIsEditing] = useState(false);
 	const [updatedTitle, setUpdatedTitle] = useState((note && note.title) || '');
 	const [updatedContent, setUpdatedContent] = useState((note && note.content) || '');
+
+	useEffect(() => {
+		const socket = socketIoClient('http://127.0.0.1:8080');
+
+		setSocket(socket);
+
+		return () => socket.disconnect();
+	}, []);
 
 	useEffect(() => {
 		if(note) {
