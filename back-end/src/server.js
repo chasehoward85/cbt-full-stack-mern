@@ -3,7 +3,7 @@ import http from 'http';
 import socketIo from 'socket.io';
 import * as admin from 'firebase-admin';
 
-import { initializeDbConnection } from './db';
+import { initializeDbConnection, notesDb } from './db';
 import { routes } from './routes';
 
 // import credentials from '../credentials.json';		// Without env ecret
@@ -23,11 +23,19 @@ const io = socketIo(server, {
 	}
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
 	console.log('A new client just connected!');
 
-	socket.on('updateNote', ({ title, content }) => {
+	const { noteId } = socket.handshake.query;
+	const note = await notesDb.findOne({ id: noteId });
+
+	socket.emit('initialNoteData', note)
+
+	socket.on('updateNote', async ({ title, content }) => {
 		console.log(`The note has been updated to ${title}: ${content}`);
+		await notesDb.updateOne({ id: noteId }, {
+			$set: { title, content },
+		});
 	});
 });
 

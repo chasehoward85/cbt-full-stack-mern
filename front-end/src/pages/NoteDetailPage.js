@@ -8,35 +8,39 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NoteDetailPage = ({ isOwner }) => {
-	const { notes, sharedNotes, isLoading, updateNote } = useContext(NotesContext);
+	const { isLoading } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
-	const note = [...notes, ...sharedNotes].find(n => n.id === noteId);
-	const { role } = note || {};
-	const canEdit = role === 'edit';
 
 	const history = useHistory();
 
 	const [socket, setSocket] = useState(null);
 
 	const [isEditing, setIsEditing] = useState(false);
-	const [updatedTitle, setUpdatedTitle] = useState((note && note.title) || '');
-	const [updatedContent, setUpdatedContent] = useState((note && note.content) || '');
+	const [updatedTitle, setUpdatedTitle] = useState('');
+	const [updatedContent, setUpdatedContent] = useState('');
+	const [role, setRole] = useState('');
+	const [isNotFound, setIsNotFound] = useState(false);
 
+	const canEdit = role === 'edit';
+	
 	useEffect(() => {
-		const socket = socketIoClient('http://127.0.0.1:8080');
+		const socket = socketIoClient('http://127.0.0.1:8080', { query: { noteId } });
+		socket.on('initialNoteData', (note) => {
+			if(note) {
+				setUpdatedTitle(note.title);
+				setUpdatedContent(note.content);
+				setRole(note.role);
+			}
+			else {
+				setIsNotFound(true);
+			}
+		});
 
 		setSocket(socket);
 
 		return () => socket.disconnect();
-	}, []);
-
-	useEffect(() => {
-		if(note) {
-			setUpdatedTitle(note.title);
-			setUpdatedContent(note.content);
-		}
-	}, [note]);
+	}, [noteId]);
 
 	useEffect(() => {
 		if(socket) {
@@ -47,17 +51,11 @@ export const NoteDetailPage = ({ isOwner }) => {
 		}
 	}, [socket, updatedTitle, updatedContent]);
 
-	const saveChanges = async () => {
-		await updateNote(noteId, { title: updatedTitle, content: updatedContent });
-		console.log(note);
-		setIsEditing(false);
-	}
-
 	if(isLoading) {
 		return <p>Loading</p>
 	}
 
-	if(!note) {
+	if(isNotFound) {
 		return <NoteNotFoundPage />
 	}
 	
@@ -76,24 +74,17 @@ export const NoteDetailPage = ({ isOwner }) => {
 				value={updatedContent}
 				onChange={e => setUpdatedContent(e.target.value)} />
 
-			<div className="evenly-spaced">
-				<button onClick={() => {
-					setUpdatedTitle(note.title);
-					setUpdatedContent(note.content);
-					setIsEditing(false);
-				}}>Cancel</button>
-				<button onClick={saveChanges}>Save Changes</button>
-			</div>
+			<button onClick={() => setIsEditing(false)}>Done</button>
 			</>
 		)
 	}
 
 	return (
 		<>
-		<h1>{note.title}</h1>
-		{note.content ? <ReactMarkdown>{note.content}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
+		<h1>{updatedTitle}</h1>
+		{updatedContent ? <ReactMarkdown>{updatedContent}</ReactMarkdown> : <p className="weak">This note currently has no content</p>}
 		<div className="evenly-spaced">
-			{isOwner && <button onClick={() => history.push(`/sharing-settings/${note.id}`)}>Share</button>}
+			{isOwner && <button onClick={() => history.push(`/sharing-settings/${noteId}`)}>Share</button>}
 			{(isOwner || canEdit) && <button onClick={() => setIsEditing(true)}>Edit</button>}
 		</div>
 		</>
