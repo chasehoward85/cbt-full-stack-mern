@@ -23,8 +23,12 @@ const io = socketIo(server, {
 	}
 });
 
-io.on('connection', () => {
+io.on('connection', (socket) => {
 	console.log('A new client just connected!');
+
+	socket.on('updateNote', ({ title, content }) => {
+		console.log(`The note has been updated to ${title}: ${content}`);
+	});
 });
 
 const start = async () => {

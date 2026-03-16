@@ -38,6 +38,15 @@ export const NoteDetailPage = ({ isOwner }) => {
 		}
 	}, [note]);
 
+	useEffect(() => {
+		if(socket) {
+			socket.emit('updateNote', {
+				title: updatedTitle,
+				content: updatedContent,
+			});
+		}
+	}, [socket, updatedTitle, updatedContent]);
+
 	const saveChanges = async () => {
 		await updateNote(noteId, { title: updatedTitle, content: updatedContent });
 		console.log(note);
