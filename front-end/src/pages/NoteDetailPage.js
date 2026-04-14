@@ -49,13 +49,13 @@ export const NoteDetailPage = ({ isOwner }) => {
 	}, [noteId]);
 
 	useEffect(() => {
-		if(socket) {
+		if(isEditing && socket) {
 			socket.emit('updateNote', {
 				title: updatedTitle,
 				content: updatedContent,
 			});
 		}
-	}, [socket, updatedTitle, updatedContent]);
+	}, [isEditing, socket, updatedTitle, updatedContent]);
 
 	if(isLoading) {
 		return <p>Loading</p>
