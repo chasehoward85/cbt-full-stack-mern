@@ -6,7 +6,7 @@ import * as admin from 'firebase-admin';
 import { initializeDbConnection, notesDb } from './db';
 import { routes } from './routes';
 
-// import credentials from '../credentials.json';		// Without env ecret
+// import credentials from '../credentials.json';		// With env secret
 
 // admin.initializeApp({ credential: admin.credential.cert(credentials) });		// Without env secret
 
@@ -33,9 +33,13 @@ io.on('connection', async (socket) => {
 
 	socket.on('updateNote', async ({ title, content }) => {
 		console.log(`The note has been updated to ${title}: ${content}`);
-		await notesDb.updateOne({ id: noteId }, {
+		const updatedNote = await notesDb.findOneAndUpdate({ id: noteId }, {
 			$set: { title, content },
+		}, {
+			returnDocument: 'after',
 		});
+
+		io.emit('noteUpdated', updatedNote);
 	});
 });
 

@@ -37,6 +37,12 @@ export const NoteDetailPage = ({ isOwner }) => {
 			}
 		});
 
+		socket.on('noteUpdated', (updatedNote) => {
+			setUpdatedTitle(updatedNote.title);
+			setUpdatedContent(updatedNote.content);
+			setRole(updatedNote.role);
+		});
+
 		setSocket(socket);
 
 		return () => socket.disconnect();
