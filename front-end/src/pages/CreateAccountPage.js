@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { getAuth, sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
 
 import { CreateAccountForm } from '../components/CreateAccountForm';
@@ -15,7 +16,16 @@ export const CreateAccountPage = () => {
 				throw new Error('Passwords do not match');
 			}
 
-			await axios.post('/users', { email, password });
+			const response = await axios.post('/users', { email, password });
+
+			await signInWithEmailAndPassword(getAuth(), email, password);
+
+			const actionCodeSettings = {
+				url: `http://localhost:3000/verify/${response.data.verificationCode}`,
+				handleCodeInApp: true,
+			};
+
+			await sendEmailVerification(getAuth().currentUser, actionCodeSettings).then(() => alert('Email sent!')).catch(e => console.log(e));
 		
 			history.push('/please-verify');
 		} catch(e) {
