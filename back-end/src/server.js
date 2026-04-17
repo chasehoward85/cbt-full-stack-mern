@@ -6,6 +6,8 @@ import * as admin from 'firebase-admin';
 import { initializeDbConnection, notesDb } from './db';
 import { routes } from './routes';
 
+import { formatSharedNote } from './util/formatSharedNote';
+
 // import credentials from '../credentials.json';		// With env secret
 
 // admin.initializeApp({ credential: admin.credential.cert(credentials) });		// Without env secret
@@ -23,13 +25,27 @@ const io = socketIo(server, {
 	}
 });
 
+io.use(async (socket, next) => {
+	if(!socket.handshake.query || !socket.handshake.query.token) {
+		return socket.emit('error', 'You need to include an auth token');
+	}
+
+	try {
+		const user = await admin.auth().verifyIdToken(socket.handshake.query.token);
+		socket.user = user;
+		next();
+	} catch(e) {
+		socket.emit('error', 'Invalid auth token');
+	}
+});
+
 io.on('connection', async (socket) => {
 	console.log('A new client just connected!');
 
 	const { noteId } = socket.handshake.query;
 	const note = await notesDb.findOne({ id: noteId });
 
-	socket.emit('initialNoteData', note)
+	socket.emit('initialNoteData', formatSharedNote(note, socket.user));
 
 	socket.on('updateNote', async ({ title, content }) => {
 		console.log(`The note has been updated to ${title}: ${content}`);
@@ -39,7 +55,9 @@ io.on('connection', async (socket) => {
 			returnDocument: 'after',
 		});
 
-		io.emit('noteUpdated', updatedNote);
+		io.sockets.sockets.forEach(targetSocket => {
+			targetSocket.emit('noteUpdated', formatSharedNote(updatedNote, targetSocket.user));
+		});
 	});
 });
 

@@ -7,10 +7,14 @@ import { NoteNotFoundPage } from './NoteNotFoundPage';
 
 import { NotesContext } from '../contexts/NotesContext';
 
+import { useUser } from '../hooks/useUser';
+
 export const NoteDetailPage = ({ isOwner }) => {
 	const { isLoading } = useContext(NotesContext);
 	
 	const { noteId } = useParams();
+
+	const { isLoading: isLoadingUser, user } = useUser();
 
 	const history = useHistory();
 
@@ -25,28 +29,44 @@ export const NoteDetailPage = ({ isOwner }) => {
 	const canEdit = role === 'edit';
 	
 	useEffect(() => {
-		const socket = socketIoClient('http://127.0.0.1:8080', { query: { noteId } });
-		socket.on('initialNoteData', (note) => {
-			if(note) {
-				setUpdatedTitle(note.title);
-				setUpdatedContent(note.content);
-				setRole(note.role);
-			}
-			else {
-				setIsNotFound(true);
-			}
-		});
+		const connectToSocket = async() => {
+			const socket = socketIoClient('http://127.0.0.1:8080', {
+				query: {
+					noteId,
+					token: await user.getIdToken(),
+				}
+			});
 
-		socket.on('noteUpdated', (updatedNote) => {
-			setUpdatedTitle(updatedNote.title);
-			setUpdatedContent(updatedNote.content);
-			setRole(updatedNote.role);
-		});
+			socket.on('initialNoteData', (note) => {
+				if(note) {
+					setUpdatedTitle(note.title);
+					setUpdatedContent(note.content);
+					setRole(note.role);
+				}
+				else {
+					setIsNotFound(true);
+				}
+			});
 
-		setSocket(socket);
+			socket.on('noteUpdated', (updatedNote) => {
+				setUpdatedTitle(updatedNote.title);
+				setUpdatedContent(updatedNote.content);
+				setRole(updatedNote.role);
+			});
 
-		return () => socket.disconnect();
-	}, [noteId]);
+			setSocket(socket);
+		}
+
+		if(!isLoading && user) {
+			connectToSocket();
+		}
+	}, [noteId, isLoading, user]);
+
+	useEffect(() => {
+		if(socket) {
+			return () => socket.disconnect();
+		}
+	}, [socket]);
 
 	useEffect(() => {
 		if(isEditing && socket) {
