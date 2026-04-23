@@ -54,6 +54,10 @@ export const NoteDetailPage = ({ isOwner }) => {
 				setRole(updatedNote.role);
 			});
 
+			socket.on('error', errorMessage => {
+				console.log(errorMessage);
+			});
+
 			setSocket(socket);
 		}
 

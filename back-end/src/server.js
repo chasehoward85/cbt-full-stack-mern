@@ -33,7 +33,13 @@ io.use(async (socket, next) => {
 	try {
 		const user = await admin.auth().verifyIdToken(socket.handshake.query.token);
 		socket.user = user;
-		next();
+
+		if(user && user.email_verified) {
+			next();
+		}
+		else {
+			socket.emit('error', 'User email not verified');
+		}
 	} catch(e) {
 		socket.emit('error', 'Invalid auth token');
 	}
@@ -45,10 +51,27 @@ io.on('connection', async (socket) => {
 	const { noteId } = socket.handshake.query;
 	const note = await notesDb.findOne({ id: noteId });
 
+	const isOwner = note.createdBy === socket.user.uid;
+	const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === socket.user.uid);
+
+	if(!isOwner && !userPermission) {
+		return socket.emit('error', 'User does not have read permission');
+	}
+
 	socket.join(noteId);
 	socket.emit('initialNoteData', formatSharedNote(note, socket.user));
 
 	socket.on('updateNote', async ({ title, content }) => {
+		const note = await notesDb.findOne({ id: noteId });
+
+		const isOwner = note.createdBy === socket.user.uid;
+		const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === socket.user.uid);
+		const hasEditAccess = userPermission && userPermission.role === 'edit';
+
+		if(!isOwner && !hasEditAccess) {
+			return socket.emit('error', 'User does not have edit permission');
+		}
+
 		console.log(`The note has been updated to ${title}: ${content}`);
 		const updatedNote = await notesDb.findOneAndUpdate({ id: noteId }, {
 			$set: { title, content },
