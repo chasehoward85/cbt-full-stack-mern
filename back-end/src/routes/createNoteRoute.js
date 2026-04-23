@@ -24,6 +24,7 @@ export const createNoteRoute = {
 			id: newNoteId,
 			title,
 			content: '',
+			sharedWith: [],
 			createdBy: userId,
 		}
 
