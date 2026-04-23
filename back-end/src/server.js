@@ -45,6 +45,7 @@ io.on('connection', async (socket) => {
 	const { noteId } = socket.handshake.query;
 	const note = await notesDb.findOne({ id: noteId });
 
+	socket.join(noteId);
 	socket.emit('initialNoteData', formatSharedNote(note, socket.user));
 
 	socket.on('updateNote', async ({ title, content }) => {
@@ -55,7 +56,10 @@ io.on('connection', async (socket) => {
 			returnDocument: 'after',
 		});
 
-		io.sockets.sockets.forEach(targetSocket => {
+		const socketIds = await io.in(noteId).allSockets();
+
+		socketIds.forEach(id => {
+			const targetSocket = io.sockets.sockets.get(id);
 			targetSocket.emit('noteUpdated', formatSharedNote(updatedNote, targetSocket.user));
 		});
 	});
