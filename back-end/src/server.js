@@ -5,6 +5,7 @@ import * as admin from 'firebase-admin';
 
 import { initializeDbConnection, notesDb } from './db';
 import { routes } from './routes';
+import { socketConnections } from './socket-connections';
 
 import { formatSharedNote } from './util/formatSharedNote';
 
@@ -46,46 +47,14 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', async (socket) => {
-	console.log('A new client just connected!');
-
-	const { noteId } = socket.handshake.query;
-	const note = await notesDb.findOne({ id: noteId });
-
-	const isOwner = note.createdBy === socket.user.uid;
-	const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === socket.user.uid);
-
-	if(!isOwner && !userPermission) {
-		return socket.emit('error', 'User does not have read permission');
+	for(let connection of socketConnections) {
+		await connection.onConnect(socket);
+		connection.eventHandlers.forEach(eventHandler => {
+			socket.on(eventHandler.eventName, data => {
+				eventHandler.handler(data, socket, io);
+			});
+		});
 	}
-
-	socket.join(noteId);
-	socket.emit('initialNoteData', formatSharedNote(note, socket.user));
-
-	socket.on('updateNote', async ({ title, content }) => {
-		const note = await notesDb.findOne({ id: noteId });
-
-		const isOwner = note.createdBy === socket.user.uid;
-		const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === socket.user.uid);
-		const hasEditAccess = userPermission && userPermission.role === 'edit';
-
-		if(!isOwner && !hasEditAccess) {
-			return socket.emit('error', 'User does not have edit permission');
-		}
-
-		console.log(`The note has been updated to ${title}: ${content}`);
-		const updatedNote = await notesDb.findOneAndUpdate({ id: noteId }, {
-			$set: { title, content },
-		}, {
-			returnDocument: 'after',
-		});
-
-		const socketIds = await io.in(noteId).allSockets();
-
-		socketIds.forEach(id => {
-			const targetSocket = io.sockets.sockets.get(id);
-			targetSocket.emit('noteUpdated', formatSharedNote(updatedNote, targetSocket.user));
-		});
-	});
 });
 
 const start = async () => {
