@@ -1,6 +1,6 @@
 import { notesDb } from '../db';
 
-export const userCanEditNote = async (req, res, next) => {
+export const userCanEditNoteMiddleware = async (req, res, next) => {
 	const authUser = req.user;
 	const { noteId } = req.params;
 

@@ -1,13 +1,13 @@
 import { v4 as uuid } from 'uuid';
 
 import { usersDb, notesDb } from '../db';
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
 
 export const createNoteRoute = {
 	path: '/users/:userId/notes',
 	method: 'post',
-	middleware: [verifyAuthToken, userEmailIsVerified],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware],
 	handler: async (req, res) => {
 		const authUser = req.user;
 		const { userId } = req.params;

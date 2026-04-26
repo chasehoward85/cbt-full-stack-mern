@@ -1,6 +1,6 @@
 import { notesDb } from '../db';
 
-export const userOwnsNote = async (req, res, next) => {
+export const userOwnsNoteMiddleware = async (req, res, next) => {
 	const authUser = req.user;
 	const { noteId } = req.params
 	const note = await notesDb.findOne({ id: noteId });

@@ -1,15 +1,15 @@
 import { notesDb } from '../db';
 
-import { userCanEditNote } from '../middleware/userCanEditNote';
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
+import { userCanEditNoteMiddleware } from '../middleware/userCanEditNoteMiddleware';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
 
 import { formatSharedNote } from '../util/formatSharedNote';
 
 export const updateNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'put',
-	middleware: [verifyAuthToken, userEmailIsVerified, userCanEditNote],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware, userCanEditNoteMiddleware],
 	handler: async (req, res) => {
 		const { noteId } = req.params;
 		const { title, content } = req.body;

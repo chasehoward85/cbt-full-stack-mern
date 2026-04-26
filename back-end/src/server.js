@@ -3,11 +3,9 @@ import http from 'http';
 import socketIo from 'socket.io';
 import * as admin from 'firebase-admin';
 
-import { initializeDbConnection, notesDb } from './db';
+import { initializeDbConnection } from './db';
 import { routes } from './routes';
 import { socketConnections } from './socket-connections';
-
-import { formatSharedNote } from './util/formatSharedNote';
 
 // import credentials from '../credentials.json';		// With env secret
 
@@ -27,23 +25,15 @@ const io = socketIo(server, {
 });
 
 io.use(async (socket, next) => {
-	if(!socket.handshake.query || !socket.handshake.query.token) {
-		return socket.emit('error', 'You need to include an auth token');
+	for(let connection of socketConnections) {
+		for(let middlewareFn of (connection.middleware || [])) {
+			const isSuccess = await middlewareFn(socket);
+
+			if(!isSuccess) return;
+		}
 	}
 
-	try {
-		const user = await admin.auth().verifyIdToken(socket.handshake.query.token);
-		socket.user = user;
-
-		if(user && user.email_verified) {
-			next();
-		}
-		else {
-			socket.emit('error', 'User email not verified');
-		}
-	} catch(e) {
-		socket.emit('error', 'Invalid auth token');
-	}
+	next();
 });
 
 io.on('connection', async (socket) => {
