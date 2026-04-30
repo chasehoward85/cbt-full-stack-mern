@@ -1,20 +1,21 @@
 import { notesDb } from '../db';
 
+import { userCanEditNote } from '../util/userCanEditNote';
+
 export const userCanEditNoteMiddleware = async (req, res, next) => {
 	const authUser = req.user;
 	const { noteId } = req.params;
 
-	const note = await notesDb.findOne({ id: noteId });
 
-	const isOwner = note.createdBy === authUser.uid;
-	const userPermission = note.sharedWith && note.sharedWith.find(setting => setting.id === authUser.uid);
-	const hasEditAccess = userPermission && userPermission.role === 'edit';
+	const canEdit = await userCanEditNote(authUser.uid, noteId);
 
-	if(!isOwner && !hasEditAccess) {
-		return res.sendStatus(403);
+	if(canEdit) {
+		const note = await notesDb.findOne({ id: noteId });
+		req.note = note;
+
+		next();
 	}
-
-	req.note = note;
-
-	next();
+	else {
+		res.sendStatus(403);
+	}
 }
