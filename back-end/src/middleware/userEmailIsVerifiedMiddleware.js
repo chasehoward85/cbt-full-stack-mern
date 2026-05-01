@@ -1,5 +1,7 @@
+import { userEmailIsVerified } from '../util/userEmailIsVerified';
+
 export const userEmailIsVerifiedMiddleware = async (req, res, next) => {
-	if(req.user && req.user.email_verified) {
+	if(req.user && await userEmailIsVerified(req.user)) {
 		next();
 	}
 	else {

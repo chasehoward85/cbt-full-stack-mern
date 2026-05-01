@@ -9,5 +9,12 @@ export const userCanEditNoteMiddleware = async (socket) => {
 
 	const canEdit = await userCanEditNote(authUser.uid, noteId);
 	
-	return canEdit;
+	if(canEdit) {
+		return true;
+	}
+	else {
+		socket.emit('error', 'User does not have edit permission');
+
+		return false;
+	}
 }
