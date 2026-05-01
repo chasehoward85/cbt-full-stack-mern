@@ -38,12 +38,19 @@ io.use(async (socket, next) => {
 
 io.on('connection', async (socket) => {
 	for(let connection of socketConnections) {
-		await connection.onConnect(socket);
-		connection.eventHandlers.forEach(eventHandler => {
-			socket.on(eventHandler.eventName, data => {
-				eventHandler.handler(data, socket, io);
-			});
-		});
+		const isSuccess = await connection.onConnect(socket);
+		if(isSuccess) {
+			for(let eventHandler of (connection.eventHandlers || [])) {
+				for(let middlewareFn of (eventHandler.middleware || [])) {
+					const isSuccess = await middlewareFn(socket);
+					if(!isSuccess) return;
+				}
+
+				socket.on(eventHandler.eventName, data => {
+					eventHandler.handler(data, socket, io);
+				});
+			};
+		}
 	}
 });
 

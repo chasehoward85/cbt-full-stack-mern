@@ -1,10 +1,12 @@
 import { notesDb } from '../db';
 
+import { userCanEditNoteMiddleware } from '../sockets-middleware/userCanEditNoteMiddleware';
+
 import { formatSharedNote } from '../util/formatSharedNote';
 
 export const updateNoteHandler = {
 	eventName: 'updateNote',
-	middleware: [],
+	middleware: [userCanEditNoteMiddleware],
 	handler: async (data, socket, io) => {
 		const { noteId } = socket.handshake.query;
 		const { title, content } = data;
