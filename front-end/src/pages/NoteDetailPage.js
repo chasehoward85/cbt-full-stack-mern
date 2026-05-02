@@ -14,7 +14,7 @@ export const NoteDetailPage = ({ isOwner }) => {
 	
 	const { noteId } = useParams();
 
-	const { isLoading: isLoadingUser, user } = useUser();
+	const { user } = useUser();
 
 	const history = useHistory();
 
@@ -55,7 +55,7 @@ export const NoteDetailPage = ({ isOwner }) => {
 			});
 
 			socket.on('error', errorMessage => {
-				console.log(errorMessage);
+				history.push(`/error?message=${encodeURIComponent(errorMessage)}`);
 			});
 
 			setSocket(socket);
@@ -64,7 +64,7 @@ export const NoteDetailPage = ({ isOwner }) => {
 		if(!isLoading && user) {
 			connectToSocket();
 		}
-	}, [noteId, isLoading, user]);
+	}, [noteId, isLoading, user, history]);
 
 	useEffect(() => {
 		if(socket) {

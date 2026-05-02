@@ -12,6 +12,7 @@ import { PleaseVeirfyEmailPage } from './pages/PleaseVerifyEmailPage';
 import { VerificationLandingPage } from './pages/VerificationLandingPage';
 import { NotVerifiedPage } from './pages/NotVerifiedPage';
 import { NoteDetailPageLinkSharing } from './pages/NoteDetailPageLinkSharing';
+import { ErrorPage } from './pages/ErrorPage';
 
 import { NavBar } from './components/NavBar';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -77,6 +78,9 @@ export const Routes = () => {
 					</Route>
 					<Route path="/not-verified">
 						<NotVerifiedPage />
+					</Route>
+					<Route path="/error">
+						<ErrorPage />
 					</Route>
 					<Route>
 						<NotFoundPage />
