@@ -25,32 +25,32 @@ const io = socketIo(server, {
 });
 
 io.use(async (socket, next) => {
-	for(let connection of socketConnections) {
-		for(let middlewareFn of (connection.middleware || [])) {
-			const isSuccess = await middlewareFn(socket);
+	const connection = socketConnections.find(connection => connection.name === socket.handshake.query);
 
-			if(!isSuccess) return;
-		}
+	for(let middlewareFn of (connection.middleware || [])) {
+		const isSuccess = await middlewareFn(socket);
+
+		if(!isSuccess) return;
 	}
 
 	next();
 });
 
 io.on('connection', async (socket) => {
-	for(let connection of socketConnections) {
-		const isSuccess = await connection.onConnect(socket);
-		if(isSuccess) {
-			for(let eventHandler of (connection.eventHandlers || [])) {
-				for(let middlewareFn of (eventHandler.middleware || [])) {
-					const isSuccess = await middlewareFn(socket);
-					if(!isSuccess) return;
-				}
+	const connection = socketConnections.find(connection => connection.name === socket.handshake.query);
 
-				socket.on(eventHandler.eventName, data => {
-					eventHandler.handler(data, socket, io);
-				});
-			};
-		}
+	const isSuccess = await connection.onConnect(socket);
+	if(isSuccess) {
+		for(let eventHandler of (connection.eventHandlers || [])) {
+			for(let middlewareFn of (eventHandler.middleware || [])) {
+				const isSuccess = await middlewareFn(socket);
+				if(!isSuccess) return;
+			}
+
+			socket.on(eventHandler.eventName, data => {
+				eventHandler.handler(data, socket, io);
+			});
+		};
 	}
 });
 
