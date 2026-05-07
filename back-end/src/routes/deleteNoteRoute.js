@@ -1,13 +1,13 @@
 import { notesDb, usersDb } from '../db';
 
-import { userOwnsNote } from '../middleware/userOwnsNote';
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
+import { userOwnsNoteMiddleware } from '../middleware/userOwnsNoteMiddleware';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
 
 export const deleteNoteRoute = {
 	path: '/notes/:noteId',
 	method: 'delete',
-	middleware: [verifyAuthToken, userEmailIsVerified, userOwnsNote],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware, userOwnsNoteMiddleware],
 	handler: async (req, res) => {
 		const { noteId } = req.params;
 

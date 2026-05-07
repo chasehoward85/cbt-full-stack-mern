@@ -1,13 +1,13 @@
 import { notesDb } from '../db';
 
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
-import { userOwnsNote } from '../middleware/userOwnsNote';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
+import { userOwnsNoteMiddleware } from '../middleware/userOwnsNoteMiddleware';
 
 export const disableLinkSharingRoute = {
 	path: '/notes/:noteId/disable-link-sharing',
 	method: 'put',
-	middleware: [verifyAuthToken, userEmailIsVerified, userOwnsNote],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware, userOwnsNoteMiddleware],
 	handler: async (req, res) => {
 		const { noteId } = req.params;
 

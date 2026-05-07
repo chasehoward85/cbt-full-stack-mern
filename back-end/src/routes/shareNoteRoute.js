@@ -1,13 +1,13 @@
 import { notesDb, usersDb } from '../db';
 
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
-import { userOwnsNote } from '../middleware/userOwnsNote';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
+import { userOwnsNoteMiddleware } from '../middleware/userOwnsNoteMiddleware';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
 
 export const shareNoteRoute = {
 	path: '/notes/:noteId/shared-emails',
 	method: 'post',
-	middleware: [verifyAuthToken, userEmailIsVerified, userOwnsNote],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware, userOwnsNoteMiddleware],
 	handler: async (req, res) => {
 		const authUser = req.user;
 		const { noteId } = req.params;

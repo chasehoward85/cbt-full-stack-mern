@@ -1,13 +1,13 @@
 import { usersDb, notesDb } from '../db';
 
-import { verifyAuthToken } from '../middleware/verifyAuthToken';
+import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
 import { formatSharedNote } from '../util/formatSharedNote';
-import { userEmailIsVerified } from '../middleware/userEmailIsVerified';
+import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
 
 export const listNotesRoute = {
 	path: '/users/:userId/notes',
 	method: 'get',
-	middleware: [verifyAuthToken, userEmailIsVerified],
+	middleware: [loadAuthUserFromTokenMiddleware, userEmailIsVerifiedMiddleware],
 	handler: async(req, res) => {
 		const authUser = req.user;
 
