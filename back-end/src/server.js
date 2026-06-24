@@ -4,6 +4,7 @@ import socketIo from 'socket.io';
 import * as admin from 'firebase-admin';
 
 import { initializeDbConnection } from './db';
+import { initializeIo, io } from './io';
 import { routes } from './routes';
 import { socketConnections } from './socket-connections';
 
@@ -17,40 +18,34 @@ const app = express();
 app.use(express.json());
 
 const server = http.createServer(app);
-const io = socketIo(server, {
-	cors: {
-		origin: '*',
-		methods: '*',
-	}
-});
+initializeIo(server);
 
 io.use(async (socket, next) => {
-	for(let connection of socketConnections) {
-		for(let middlewareFn of (connection.middleware || [])) {
-			const isSuccess = await middlewareFn(socket);
+	const connection = await socketConnections.find(connection => connection.name === socket.handshake.query.name);
+	for(let middlewareFn of (connection.middleware || [])) {
+		const isSuccess = await middlewareFn(socket);
 
-			if(!isSuccess) return;
-		}
+		if(!isSuccess) return;
 	}
 
 	next();
 });
 
 io.on('connection', async (socket) => {
-	for(let connection of socketConnections) {
-		const isSuccess = await connection.onConnect(socket);
-		if(isSuccess) {
-			for(let eventHandler of (connection.eventHandlers || [])) {
-				for(let middlewareFn of (eventHandler.middleware || [])) {
-					const isSuccess = await middlewareFn(socket);
-					if(!isSuccess) return;
-				}
+	const connection = socketConnections.find(connection => connection.name === socket.handshake.query.name);
 
-				socket.on(eventHandler.eventName, data => {
-					eventHandler.handler(data, socket, io);
-				});
-			};
-		}
+	const isSuccess = await connection.onConnect(socket);
+	if(isSuccess) {
+		for(let eventHandler of (connection.eventHandlers || [])) {
+			for(let middlewareFn of (eventHandler.middleware || [])) {
+				const isSuccess = await middlewareFn(socket);
+				if(!isSuccess) return;
+			}
+
+			socket.on(eventHandler.eventName, data => {
+				eventHandler.handler(data, socket, io);
+			});
+		};
 	}
 });
 

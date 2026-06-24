@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import socketIoClient from 'socket.io-client';
 
 import { useUser } from '../hooks/useUser';
 import { useAuthedRequest } from '../hooks/useAuthedRequest';
@@ -6,32 +7,54 @@ import { useAuthedRequest } from '../hooks/useAuthedRequest';
 import { NotesContext } from '../contexts/NotesContext';
 
 export const NotesProvider = ({ children }) => {
-	const { isReady, get, post, put, del} = useAuthedRequest();
+	const {get, post, put, del} = useAuthedRequest();
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
 	const [sharedNotes, setSharedNotes] = useState([]);
+	const [socket, setSocket] = useState(null);
 	
-	const { user } = useUser();
+	const { isLoading: isLoadingUser, user } = useUser();
 
 	useEffect(() => {
-		const loadNotes = async () => {
-			try {
-				const {owned, shared } = await get(`/users/${user.uid}/notes`);
+		const connectToSocket = async () => {
+			const socket = socketIoClient('http://127.0.0.1:8080', {
+				query: {
+					name: 'allNotes',
+					token: await user.getIdToken(),
+				}
+			});
+		
+			setSocket(socket);
+		}
 
+		if(!isLoadingUser && user) {
+			connectToSocket();
+		}
+	}, [user, isLoadingUser]);
+
+	useEffect(() => {
+		if(socket) {
+			socket.on('initialNotes', ({ owned, shared }) => {
 				setNotes(owned);
 				setSharedNotes(shared);
-				
-				setIsLoading(false);
-			} catch(e) {
-				setIsLoading(false);
-			}
-		}
 
-		if(user && isReady) {
-			loadNotes();
+				setIsLoading(false);
+			});
+
+			socket.on('noteShared', newSharedNote => {
+				setSharedNotes(sharedNotes.concat(newSharedNote));
+			});
+
+			socket.on('noteUnshared', id => {
+				setSharedNotes(sharedNotes.filter(note => note.id !== id));
+			});
+
+			socket.on('error', (errorMessage) => {
+				console.log(errorMessage);
+			});
 		}
-	}, [user, get, isReady]);
+	}, [socket, sharedNotes]);
 
 	const createNote = async title => {
 		if(!user) {

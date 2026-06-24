@@ -1,8 +1,11 @@
 import { notesDb, usersDb } from '../db';
+import { io } from '../io';
 
 import { loadAuthUserFromTokenMiddleware } from '../middleware/loadAuthUserFromTokenMiddleware';
 import { userOwnsNoteMiddleware } from '../middleware/userOwnsNoteMiddleware';
 import { userEmailIsVerifiedMiddleware } from '../middleware/userEmailIsVerifiedMiddleware';
+
+import { formatSharedNote } from '../util/formatSharedNote';
 
 export const shareNoteRoute = {
 	path: '/notes/:noteId/shared-emails',
@@ -27,6 +30,12 @@ export const shareNoteRoute = {
 			$push: { sharedWith: { id: userWithEmail.id, email, role: role } },
 		}, {
 			returnDocument: 'after',
+		});
+
+		io.sockets.sockets.forEach(targetSocket => {
+			if(targetSocket.user?.uid === userWithEmail.id) {
+				targetSocket.emit('noteShared', targetSocket.user && formatSharedNote(result, targetSocket.user));
+			}
 		});
 
 		res.json(result.sharedWith);

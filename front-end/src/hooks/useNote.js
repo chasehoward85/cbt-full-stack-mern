@@ -17,6 +17,7 @@ export const useNote = (noteId) => {
 		const connectToSocket = async() => {
 			const socket = socketIoClient('http://127.0.0.1:8080', {
 				query: {
+					name: 'noteDetail',
 					noteId,
 					token: await user.getIdToken(),
 				}
